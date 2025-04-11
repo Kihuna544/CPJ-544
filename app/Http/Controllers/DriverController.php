@@ -37,7 +37,7 @@ class DriverController extends Controller
 
         Driver::create($request->only(['name', 'phone', 'license_number'])); // ✅ CORRECT
 
-        return redirect()->route('drivers.index'->with('sucess', 'Driver added succesfully!'));
+        return redirect()->route('drivers.index')->with('sucess', 'Driver added succesfully!');
     }
 
     /**
@@ -69,7 +69,7 @@ class DriverController extends Controller
      */
     public function destroy(Driver $driver)
     {
-        $request->delete();
+        $driver->delete();
         return redirect()->route('drivers.index')->with('success', 'Driver deleted succesfully!');
     }
 }
