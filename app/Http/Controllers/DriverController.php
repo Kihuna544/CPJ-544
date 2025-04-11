@@ -29,13 +29,13 @@ class DriverController extends Controller
      */
     public function store(Request $request)
     {
-        $requst->validate([
+        $request->validate([
             'name' => 'required',
             'phone' => 'nullable',
             'license_number' => 'nullable',
         ]);
 
-        Driver::create($request->all());
+        Driver::create($request->only(['name', 'phone', 'license_number'])); // ✅ CORRECT
 
         return redirect()->route('drivers.index'->with('sucess', 'Driver added succesfully!'));
     }
