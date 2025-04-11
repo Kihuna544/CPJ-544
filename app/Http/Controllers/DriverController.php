@@ -10,18 +10,18 @@ class DriverController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $drivers = Driver::all();
-        return view('drivers.index', compact('drivers'));
-    }
+
+     public function index() {
+            $drivers = Driver::all();
+            return view('drivers.index', compact('drivers'));
+     }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        //
+        return view('drivers.create');
     }
 
     /**
@@ -29,7 +29,15 @@ class DriverController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $requst->validate([
+            'name' => 'required',
+            'phone' => 'nullable',
+            'license_number' => 'nullable',
+        ]);
+
+        Driver::create($request->all());
+
+        return redirect()->route('drivers.index'->with('sucess', 'Driver added succesfully!'));
     }
 
     /**
@@ -61,6 +69,7 @@ class DriverController extends Controller
      */
     public function destroy(Driver $driver)
     {
-        //
+        $request->delete();
+        return redirect()->route('drivers.index')->with('success', 'Driver deleted succesfully!');
     }
 }
