@@ -11,7 +11,8 @@ class ClientController extends Controller
      */
     public function index()
     {
-        //
+        $clients = Client::all();
+        return view('clients.index', compact('clients'));
     }
 
     /**
@@ -19,7 +20,7 @@ class ClientController extends Controller
      */
     public function create()
     {
-        //
+        return view('clients.create');
     }
 
     /**
@@ -27,7 +28,17 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable',
+            'location' => 'nullable',
+            'email' => 'nullable|email',
+            'bussiness_name' => 'nullable',
+        ]);
+
+        Clients::create($request->all());
+        
+        return redirect()->route('clients.index')->with('success', 'Client created successfully.');
     }
 
     /**

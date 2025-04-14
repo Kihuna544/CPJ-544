@@ -21,6 +21,6 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('drivers', DriverController::class);
 
-Route::resources('drivers', ClientController::class);
+Route::resource('clients', ClientController::class);
 
 require __DIR__.'/auth.php';
