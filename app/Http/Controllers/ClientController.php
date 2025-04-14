@@ -49,6 +49,26 @@ class ClientController extends Controller
     {
         return view('clients.show', compact('client'));
     }
+
+    // In ClientController.php
+
+public function getPaymentStatus($clientId)
+{
+    $client = Client::findOrFail($clientId);
+
+    $lastPayment = $client->payments()->latest()->first(); // assuming you have a payments relationship
+    $unpaidAmount = $lastPayment ? $lastPayment->amount - $lastPayment->paid_amount : 0;
+    $newDeliveryAmount = 1000; // This would depend on your logic
+
+    return response()->json([
+        'paid' => $lastPayment && $lastPayment->paid_amount == $lastPayment->amount,
+        'last_payment_amount' => $lastPayment ? $lastPayment->amount : 0,
+        'last_payment_date' => $lastPayment ? $lastPayment->created_at->toDateString() : 'N/A',
+        'unpaid_amount' => $unpaidAmount,
+        'new_delivery_amount' => $newDeliveryAmount,
+    ]);
+}
+
     /**
      * Show the form for editing the specified resource.
      */
