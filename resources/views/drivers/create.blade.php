@@ -1,34 +1,42 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-5">
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">Add New Driver</h4>
+<div class="container">
+    <h1 class="mb-4">Add New Driver</h1>
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> Please fix the following errors:
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
-        <div class="card-body">
-            <form action="{{ route('drivers.store') }}" method="POST" id="driverForm">
-                @csrf
+    @endif
 
-                <div class="form-group mb-3">
-                    <label for="name">Name</label>
-                    <input type="text" name="name" class="form-control" placeholder="Enter driver's name" required>
-                </div>
+    <form action="{{ route('drivers.store') }}" method="POST">
+        @csrf
 
-                <div class="form-group mb-3">
-                    <label for="phone">Phone</label>
-                    <input type="text" name="phone" class="form-control" placeholder="Enter phone number" required>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="license_number">License Number</label>
-                    <input type="text" name="license_number" class="form-control" placeholder="Enter license number" required>
-                </div>
-
-                <button type="submit" class="btn btn-success">Save Driver</button>
-                <a href="{{ route('drivers.index') }}" class="btn btn-secondary">Cancel</a>
-            </form>
+        <div class="mb-3">
+            <label for="name" class="form-label">Driver Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required>
         </div>
-    </div>
+
+        <div class="mb-3">
+            <label for="phone" class="form-label">Phone</label>
+            <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone') }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="license_number" class="form-label">License Number</label>
+            <input type="text" class="form-control" id="license_number" name="license_number" value="{{ old('license_number') }}">
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success">Save</button>
+            <a href="{{ route('drivers.index') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
 </div>
 @endsection

@@ -12,8 +12,8 @@ class DriverController extends Controller
      */
 
      public function index() {
-            $drivers = Driver::all();
-            return view('drivers.index', compact('drivers'));
+        $drivers = Driver::paginate(50);          
+         return view('drivers.index', compact('drivers'));
      }
 
     /**
@@ -35,9 +35,9 @@ class DriverController extends Controller
             'license_number' => 'nullable',
         ]);
 
-        Driver::create($request->only(['name', 'phone', 'license_number'])); // ✅ CORRECT
+        Driver::create($request->only(['name', 'phone', 'license_number'])); 
 
-        return redirect()->route('drivers.index')->with('sucess', 'Driver added succesfully!');
+        return redirect()->route('drivers.index')->with('success', 'Driver added succesfully!');
     }
 
     /**
