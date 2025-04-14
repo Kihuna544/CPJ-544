@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Client;
 
 class ClientController extends Controller
 {
@@ -36,26 +37,28 @@ class ClientController extends Controller
             'bussiness_name' => 'nullable',
         ]);
 
-        Clients::create($request->all());
-        
+        Client::create($request->all());
+
         return redirect()->route('clients.index')->with('success', 'Client created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Client $client)
     {
-        //
+        return view('clients.show', compact('client'));
     }
-
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Client $client)
     {
-        //
+        return view('clients.edit', compact('client'));
     }
+    
+        //
+    
 
     /**
      * Update the specified resource in storage.
