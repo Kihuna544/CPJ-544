@@ -24,32 +24,33 @@ class TripController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $data = $request->validate([
-            'driver_id' => 'required|exists:drivers,id',
-            'trip_date' => 'required|date',
-            'destination' => 'required|string',
-            'clients_data' => 'required|string'
+{
+    $request->validate([
+        'driver_id' => 'required|exists:drivers,id',
+        'trip_date' => 'required|date',
+        'destination' => 'required|string|max:255',
+        'clients' => 'required|array|min:1',
+        'clients.*.client_id' => 'required|exists:clients,id',
+        'clients.*.delivery_amount' => 'required|numeric|min:0',
+    ]);
+
+    // Create trip
+    $trip = Trip::create([
+        'driver_id' => $request->driver_id,
+        'trip_date' => $request->trip_date,
+        'destination' => $request->destination,
+    ]);
+
+    // Attach clients with delivery amounts
+    foreach ($request->clients as $clientData) {
+        $trip->clients()->attach($clientData['client_id'], [
+            'delivery_amount' => $clientData['delivery_amount'],
         ]);
-
-        $trip = Trip::create([
-            'driver_id' => $data['driver_id'],
-            'trip_date' => $data['trip_date'],
-            'destination' => $data['destination'],
-        ]);
-
-        $clients = json_decode($data['clients_data'], true);
-
-        foreach ($clients as $client) {
-            $trip->clients()->attach($client['client_id'], [
-                'delivery_amount' => $client['delivery_amount'],
-                'unpaid_amount' => $client['unpaid_amount'],
-                'total_to_pay' => $client['total_to_pay'],
-            ]);
-        }
-
-        return redirect()->route('trips.index')->with('success', 'Trip created successfully.');
     }
+
+    return redirect()->route('trips.index')->with('success', 'Trip successfully created!');
+}
+
 
     public function getPaymentStatus($clientId, Request $request)
     {

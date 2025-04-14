@@ -1,4 +1,4 @@
-@extends('layouts.app') {{-- Or your main layout --}}
+@extends('layouts.app')
 
 @section('content')
 <div class="container mt-4">
@@ -12,28 +12,37 @@
 
     @if($trips->count())
         <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-                <thead class="thead-dark">
+            <table class="table table-bordered table-striped table-hover align-middle">
+                <thead class="table-dark">
                     <tr>
                         <th>#</th>
                         <th>Driver</th>
-                        <th>Clients</th>
+                        <th>Clients & Amounts</th>
                         <th>Date</th>
                         <th>Destination</th>
+                        <th>Total Delivery Amount</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($trips as $trip)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $trip->driver->name ?? 'N/A' }}</td>
+                            <td>{{ $trip->driver->name ?? '-' }}</td>
                             <td>
-                                @foreach($trip->clients as $client)
-                                    <span class="badge bg-info text-dark">{{ $client->name }}</span>
-                                @endforeach
+                                @forelse($trip->clients as $client)
+                                    <div>
+                                        <strong>{{ $client->name }}</strong><br>
+                                        <small>Delivery: ${{ number_format($client->pivot->delivery_amount, 2) }}</small>
+                                    </div>
+                                @empty
+                                    <span class="text-muted">No Clients</span>
+                                @endforelse
                             </td>
-                            <td>{{ $trip->trip_date }}</td>
+                            <td>{{ \Carbon\Carbon::parse($trip->trip_date)->format('d M Y') }}</td>
                             <td>{{ $trip->destination }}</td>
+                            <td>
+                                ${{ number_format($trip->clients->sum(fn($c) => $c->pivot->delivery_amount), 2) }}
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>

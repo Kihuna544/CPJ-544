@@ -28,9 +28,14 @@ class Trip extends Model
         return $this->belongsTo(Client::class);
     }
 
-    public function clients()
+
+        public function clients()
     {
-        return $this->belongsToMany(Client::class)->withPivot('amount_paid');
+        return $this->belongsToMany(Client::class)->withPivot('delivery_amount')->withTimestamps();
     }
 
+
 }
+
+
+
