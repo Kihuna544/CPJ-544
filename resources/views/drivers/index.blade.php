@@ -1,3 +1,4 @@
+{{-- drivers/index.blade.php --}}
 @extends('layouts.app')
 
 @section('content')
@@ -8,45 +9,32 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <div class="d-flex justify-content-end mb-3">
-        <a href="{{ route('drivers.create') }}" class="btn btn-primary">Add Driver</a>
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createDriverModal">
+        <i class="fas fa-user-plus me-1"></i> Add Driver
+    </button>
+
+    @include('drivers.create')
+
+    <div class="row">
+        @foreach($drivers as $driver)
+        <div class="col-md-4 mb-4">
+            <div class="card glass-card">
+                <div class="card-body text-center">
+                    <i class="fas fa-user-circle fa-3x text-primary mb-2"></i>
+                    <h5 class="card-title">{{ $driver->name }}</h5>
+                    <p class="card-text">📞 {{ $driver->phone }}<br>🪪 {{ $driver->license_number }}</p>
+                    <form action="{{ route('drivers.destroy', $driver->id) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button onclick="return confirm('Are you sure?')" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        @endforeach
     </div>
-
-    @if($drivers->count())
-        <div class="table-responsive">
-            <table class="table table-striped table-bordered align-middle">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Name</th>
-                        <th>Phone</th>
-                        <th>License Number</th>
-                        <th class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($drivers as $driver)
-                    <tr>
-                        <td>{{ $driver->name }}</td>
-                        <td>{{ $driver->phone }}</td>
-                        <td>{{ $driver->license_number }}</td>
-                        <td class="text-center">
-                            <form action="{{ route('drivers.destroy', $driver->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this driver?')">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm btn-danger">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-
-        <div class="mt-4">
-            {{ $drivers->links() }}
-        </div>
-    @else
-        <div class="alert alert-info">No drivers found. Add one using the button above.</div>
-    @endif
 </div>
 @endsection
+
