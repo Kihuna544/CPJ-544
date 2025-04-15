@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
 {
-    protected $fillable = ['name', 'email', 'phone', 'location', 'business_name'];
+    protected $fillable = ['business_name', 'phone', 'profile_photo'];
 
     public function trips()
 {

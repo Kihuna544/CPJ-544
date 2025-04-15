@@ -13,11 +13,8 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('bussiness_name');
             $table->string('phone')->nullable()->index();
-            $table->string('location')->nullable();
-            $table->string('email')->nullable()->unique();
-            $table->string('business_name')->nullable();
             $table->string('profile_photo')->nullable(); // Profile photo URL
             $table->timestamps();
         });

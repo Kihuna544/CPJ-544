@@ -10,7 +10,7 @@ class ClientJourney extends Model
         'client_id',
         'journey_id',
         'sacks_carried',
-        'amount_to_be_paid',
+        'amount_to_pay',
         'amount_paid',
         'remaining_balance'
     ];

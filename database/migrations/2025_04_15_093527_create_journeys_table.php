@@ -17,7 +17,6 @@ return new class extends Migration
             $table->enum('direction', ['T2B', 'B2T']); // Town to Bush or Bush to Town
             $table->timestamp('started_at')->nullable();
             $table->timestamp('ended_at')->nullable();
-            $table->decimal('fuel_expense', 8, 2)->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
         });
