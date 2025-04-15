@@ -20,15 +20,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('drivers', DriverController::class);
-
-Route::resource('clients', ClientController::class);
-
 Route::resource('trips', TripController::class);
-
-
-
-Route::get('/clients/{client}/payment-status', [ClientController::class, 'getPaymentStatus']);
+Route::resource('clients', ClientController::class);
+Route::resource('drivers', DriverController::class);
+Route::resource('payments', PaymentController::class);
+Route::resource('expenses', ExpenseController::class);
+Route::resource('journeys', JourneyController::class);
+Route::resource('client-participations', ClientParticipationController::class);
 
 
 require __DIR__.'/auth.php';

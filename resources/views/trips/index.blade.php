@@ -1,55 +1,42 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-4">
-    <h2 class="mb-4">All Trips</h2>
+    <h1>All Trips</h1>
+    <a href="{{ route('trips.create') }}" class="btn btn-primary mb-3">Create New Trip</a>
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    <a href="{{ route('trips.create') }}" class="btn btn-primary mb-3">Add New Trip</a>
-
-    @if($trips->count())
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped table-hover align-middle">
-                <thead class="table-dark">
-                    <tr>
-                        <th>#</th>
-                        <th>Driver</th>
-                        <th>Clients & Amounts</th>
-                        <th>Date</th>
-                        <th>Destination</th>
-                        <th>Total Delivery Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($trips as $trip)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $trip->driver->name ?? '-' }}</td>
-                            <td>
-                                @forelse($trip->clients as $client)
-                                    <div>
-                                        <strong>{{ $client->name }}</strong><br>
-                                        <small>Delivery: ${{ number_format($client->pivot->delivery_amount, 2) }}</small>
-                                    </div>
-                                @empty
-                                    <span class="text-muted">No Clients</span>
-                                @endforelse
-                            </td>
-                            <td>{{ \Carbon\Carbon::parse($trip->trip_date)->format('d M Y') }}</td>
-                            <td>{{ $trip->destination }}</td>
-                            <td>
-                                ${{ number_format($trip->clients->sum(fn($c) => $c->pivot->delivery_amount), 2) }}
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    @else
-        <div class="alert alert-info">No trips found.</div>
-    @endif
-</div>
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Driver</th>
+                <th>Status</th>
+                <th>Sacks</th>
+                <th>Amount Paid</th>
+                <th>Balance</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($trips as $trip)
+                <tr>
+                    <td>{{ $trip->id }}</td>
+                    <td>{{ $trip->trip_date }}</td>
+                    <td>{{ $trip->driver->name }}</td>
+                    <td>{{ ucfirst($trip->status) }}</td>
+                    <td>{{ $trip->sacks_delivered }}</td>
+                    <td>{{ number_format($trip->amount_paid, 2) }}</td>
+                    <td>{{ number_format($trip->remaining_balance, 2) }}</td>
+                    <td>
+                        <a href="{{ route('trips.show', $trip) }}" class="btn btn-info btn-sm">View</a>
+                        <a href="{{ route('trips.edit', $trip) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form action="{{ route('trips.destroy', $trip) }}" method="POST" class="d-inline">
+                            @csrf @method('DELETE')
+                            <button onclick="return confirm('Are you sure?')" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
 @endsection

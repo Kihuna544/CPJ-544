@@ -3,78 +3,89 @@
 namespace App\Http\Controllers;
 
 use App\Models\Trip;
-use App\Models\Client;
 use App\Models\Driver;
+use App\Models\Journey;
+use App\Models\Client;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 
 class TripController extends Controller
 {
+    // Show list of all trips
     public function index()
     {
-        $trips = Trip::with('driver', 'clients')->latest()->get();
+        $trips = Trip::with(['driver', 'journeys'])->latest()->get();
         return view('trips.index', compact('trips'));
     }
 
+    // Show form to create a new trip
     public function create()
     {
         $drivers = Driver::all();
-        $clients = Client::all();
-        return view('trips.create', compact('drivers', 'clients'));
+        return view('trips.create', compact('drivers'));
     }
 
+    // Store new trip in the database
     public function store(Request $request)
-{
-    $request->validate([
-        'driver_id' => 'required|exists:drivers,id',
-        'trip_date' => 'required|date',
-        'destination' => 'required|string|max:255',
-        'clients' => 'required|array|min:1',
-        'clients.*.client_id' => 'required|exists:clients,id',
-        'clients.*.delivery_amount' => 'required|numeric|min:0',
-    ]);
-
-    // Create trip
-    $trip = Trip::create([
-        'driver_id' => $request->driver_id,
-        'trip_date' => $request->trip_date,
-        'destination' => $request->destination,
-    ]);
-
-    // Attach clients with delivery amounts
-    foreach ($request->clients as $clientData) {
-        $trip->clients()->attach($clientData['client_id'], [
-            'delivery_amount' => $clientData['delivery_amount'],
+    {
+        $validated = $request->validate([
+            'driver_id' => 'required|exists:drivers,id',
+            'trip_date' => 'required|date',
         ]);
+
+        $trip = Trip::create([
+            'driver_id' => $validated['driver_id'],
+            'trip_date' => $validated['trip_date'],
+            'status' => 'pending',
+        ]);
+
+        // Optionally: create default town-to-bush and bush-to-town journeys here
+        Journey::create([
+            'trip_id' => $trip->id,
+            'type' => 'T2B', // Town to Bush
+            'status' => 'in_progress',
+        ]);
+
+        Journey::create([
+            'trip_id' => $trip->id,
+            'type' => 'B2T', // Bush to Town
+            'status' => 'pending',
+        ]);
+
+        return redirect()->route('trips.show', $trip)->with('success', 'Trip created successfully.');
     }
 
-    return redirect()->route('trips.index')->with('success', 'Trip successfully created!');
-}
-
-
-    public function getPaymentStatus($clientId, Request $request)
+    // Show a single trip and its details
+    public function show(Trip $trip)
     {
-        $client = Client::findOrFail($clientId);
+        $trip->load(['driver', 'journeys', 'clientParticipations.clients', 'expenses', 'payments']);
+        return view('trips.show', compact('trip'));
+    }
 
-        // Get last trip where this client was involved
-        $lastTrip = $client->trips()->latest()->first();
+    // Show form to edit a trip
+    public function edit(Trip $trip)
+    {
+        $drivers = Driver::all();
+        return view('trips.edit', compact('trip', 'drivers'));
+    }
 
-        $unpaid = 0;
-        $lastPaymentDate = null;
-        $lastPaymentAmount = 0;
-
-        if ($lastTrip) {
-            $pivot = $lastTrip->pivot ?? $lastTrip->clients()->where('client_id', $clientId)->first()->pivot;
-
-            $unpaid = $pivot->total_to_pay - ($pivot->amount_paid ?? 0);
-            $lastPaymentAmount = $pivot->amount_paid ?? 0;
-            $lastPaymentDate = $pivot->updated_at ? Carbon::parse($pivot->updated_at)->format('Y-m-d') : null;
-        }
-
-        return response()->json([
-            'unpaid_amount' => $unpaid,
-            'last_payment_date' => $lastPaymentDate ?? 'N/A',
-            'last_payment_amount' => $lastPaymentAmount,
+    // Update the trip
+    public function update(Request $request, Trip $trip)
+    {
+        $validated = $request->validate([
+            'driver_id' => 'required|exists:drivers,id',
+            'trip_date' => 'required|date',
+            'status' => 'required|in:pending,completed',
         ]);
+
+        $trip->update($validated);
+
+        return redirect()->route('trips.index')->with('success', 'Trip updated successfully.');
+    }
+
+    // Delete a trip
+    public function destroy(Trip $trip)
+    {
+        $trip->delete();
+        return redirect()->route('trips.index')->with('success', 'Trip deleted successfully.');
     }
 }

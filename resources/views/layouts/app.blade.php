@@ -1,55 +1,45 @@
-{{-- layouts/app.blade.php --}}
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CPJ Transport</title>
+    <title>CPJ544 Transport System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap 5.3 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Custom Styles -->
     <style>
         body {
-            transition: background-color 0.4s, color 0.4s;
+            background-image: url('https://images.unsplash.com/photo-1517032208361-5a53a0c1b8d6?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
             padding: 2rem;
+            margin-top: 3rem;
+            border-radius: 1rem;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
 
-        .dark-toggle {
-            cursor: pointer;
+        h1, h2 {
+            color: #2c3e50;
         }
     </style>
 </head>
-<body class="bg-light text-dark">
-    <div class="container py-4">
-        <div class="d-flex justify-content-between mb-4 align-items-center">
-            <h2>🚛 CPJ Transport</h2>
-            <i class="fas fa-moon dark-toggle fs-4" onclick="toggleDarkMode()" title="Toggle Dark Mode"></i>
-        </div>
-
+<body>
+    <div class="container">
         @yield('content')
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS & jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        function toggleDarkMode() {
-            const html = document.documentElement;
-            const isDark = html.getAttribute("data-bs-theme") === "dark";
-            html.setAttribute("data-bs-theme", isDark ? "light" : "dark");
-        }
-    </script>
+    @yield('scripts')
 </body>
 </html>
-
