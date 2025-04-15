@@ -6,36 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Trip extends Model
 {
-
-    protected $fillable = [
-        'driver_id',
-        'client_id',
-        'trip_date',
-        'destination',
-        'sacks_delivered',
-        'amount_paid',
-        'remaining_balance',
-        'status',
-    ];
+    protected $fillable = ['driver_id', 'trip_date', 'status'];
 
     public function driver()
     {
         return $this->belongsTo(Driver::class);
     }
 
-    public function client()
+    public function journeys()
     {
-        return $this->belongsTo(Client::class);
+        return $this->hasMany(Journey::class);
     }
-
-
-        public function clients()
-    {
-        return $this->belongsToMany(Client::class)->withPivot('delivery_amount')->withTimestamps();
-    }
-
-
 }
-
-
-
