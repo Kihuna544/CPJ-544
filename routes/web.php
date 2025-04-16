@@ -5,12 +5,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\TripController;
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\JourneyController;
+use App\Http\Controllers\ClientParticipationController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/',[DashboardController::class, 'index'] )->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/',[DashboardController::class, 'index'] );
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');   
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
