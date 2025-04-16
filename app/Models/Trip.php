@@ -28,7 +28,7 @@ class Trip extends Model
     }
 
     // Client participations on this trip
-    public function participations()
+    public function clientParticipations()
     {
         return $this->hasMany(ClientParticipation::class);
     }
@@ -56,4 +56,10 @@ class Trip extends Model
     {
         return $this->participations->sum('balance');
     }
+
+        public function expenses()
+    {
+        return $this->hasMany(Expense::class);
+    }
+
 }

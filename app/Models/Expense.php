@@ -12,4 +12,9 @@ class Expense extends Model
     {
         return $this->belongsTo(Journey::class);
     }
+        public function trip()
+    {
+        return $this->belongsTo(Trip::class);
+    }
+
 }

@@ -60,7 +60,7 @@ class TripController extends Controller
     // Show a single trip and its details
     public function show(Trip $trip)
     {
-        $trip->load(['driver', 'journeys', 'clientParticipations.clients', 'expenses', 'payments']);
+        $trip->load(['driver', 'journeys', 'clientParticipations.client', 'expenses', 'payments']);
         return view('trips.show', compact('trip'));
     }
 

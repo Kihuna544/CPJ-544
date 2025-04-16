@@ -18,14 +18,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('home');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('trips', TripController::class);
-Route::resource('clients', ClientController::class);
-Route::resource('drivers', DriverController::class);
-Route::resource('payments', PaymentController::class);
-Route::resource('expenses', ExpenseController::class);
-Route::resource('journeys', JourneyController   ::class);
-Route::resource('client-participations', ClientParticipationController::class);
-Route::get('/clients/{client}/latest-balance', [ParticipationController::class, 'latestBalance']);
-Route::get('/clients/{client}/profile', [ClientController::class, 'profile'])->name('clients.profile');
+    Route::resource('clients', ClientController::class);
+    Route::resource('drivers', DriverController::class);
+    Route::resource('payments', PaymentController::class);
+    Route::resource('expenses', ExpenseController::class);
+    Route::resource('journeys', JourneyController   ::class);
+    Route::resource('client-participations', ClientParticipationController::class);
+    Route::get('/clients/{client}/latest-balance', [ParticipationController::class, 'latestBalance']);
+    Route::get('/clients/{client}/profile', [ClientController::class, 'profile'])->name('clients.profile');
 
 });
 

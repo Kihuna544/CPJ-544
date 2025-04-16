@@ -9,21 +9,20 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('trips', function (Blueprint $table) {
-            $table->text('notes')->nullable()->after('status');
+        Schema::table('expenses', function (Blueprint $table) {
+            $table->foreignId('trip_id')->constrained()->onDelete('cascade');
         });
     }
-    
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::table('trips', function (Blueprint $table) {
-            $table->dropColumn('notes');
+        Schema::table('expenses', function (Blueprint $table) {
+            //
         });
     }
 };
