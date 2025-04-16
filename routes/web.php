@@ -10,9 +10,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/',[DashboardController::class, 'index'] )->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -25,7 +23,7 @@ Route::resource('clients', ClientController::class);
 Route::resource('drivers', DriverController::class);
 Route::resource('payments', PaymentController::class);
 Route::resource('expenses', ExpenseController::class);
-Route::resource('journeys', JourneyController::class);
+Route::resource('journeys', JourneyController   ::class);
 Route::resource('client-participations', ClientParticipationController::class);
 Route::get('/clients/{client}/latest-balance', [ParticipationController::class, 'latestBalance']);
 Route::get('/clients/{client}/profile', [ClientController::class, 'profile'])->name('clients.profile');
