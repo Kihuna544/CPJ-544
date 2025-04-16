@@ -12,5 +12,10 @@ class Client extends Model
 {
     return $this->belongsToMany(Trip::class);
 }
+public function participations()
+{
+    return $this->hasMany(ClientParticipation::class);
+}
+
 
 }

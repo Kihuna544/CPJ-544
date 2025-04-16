@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Trip extends Model
 {
     protected $fillable = ['driver_id', 'trip_date', 'status'];
+    protected $dates = ['trip_date'];
+
 
     public function driver()
     {
@@ -17,4 +19,10 @@ class Trip extends Model
     {
         return $this->hasMany(Journey::class);
     }
+    
+    public function participations()
+{
+    return $this->hasMany(ClientParticipation::class);
+}
+
 }

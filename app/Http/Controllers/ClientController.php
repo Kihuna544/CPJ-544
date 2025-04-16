@@ -47,9 +47,14 @@ class ClientController extends Controller
      */
     public function show(Client $client)
     {
-        return view('clients.show', compact('client'));
+        $participations = $client->participations()
+            ->with('trip')
+            ->orderByDesc('created_at')
+            ->get();
+    
+        return view('clients.show', compact('client', 'participations'));
     }
-
+    
     // In ClientController.php
 
 public function getPaymentStatus($clientId)
@@ -76,6 +81,27 @@ public function getPaymentStatus($clientId)
     {
         return view('clients.edit', compact('client'));
     }
+        public function profile(Client $client)
+    {
+        $participations = $client->participations()->with('trip')->latest()->get();
+
+        $totalSacks = $participations->sum('sacks_carried');
+        $totalToPay = $participations->sum('amount_to_pay');
+        $totalPaid = $participations->sum('amount_paid');
+        $totalBalance = $participations->sum('balance');
+        $cropTypes = $participations->pluck('crop_type')->unique()->filter();
+
+        return view('clients.profile', compact(
+            'client',
+            'participations',
+            'totalSacks',
+            'totalToPay',
+            'totalPaid',
+            'totalBalance',
+            'cropTypes'
+        ));
+    }
+
     
         //
     

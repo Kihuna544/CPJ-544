@@ -27,6 +27,8 @@ Route::resource('payments', PaymentController::class);
 Route::resource('expenses', ExpenseController::class);
 Route::resource('journeys', JourneyController::class);
 Route::resource('client-participations', ClientParticipationController::class);
+Route::get('/clients/{client}/latest-balance', [ParticipationController::class, 'latestBalance']);
+Route::get('/clients/{client}/profile', [ClientController::class, 'profile'])->name('clients.profile');
 
 
 require __DIR__.'/auth.php';
