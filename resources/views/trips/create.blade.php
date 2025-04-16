@@ -1,46 +1,41 @@
 @extends('layouts.app')
 
 @section('content')
-    <h2>Create New Trip</h2>
+<div class="container">
+    <h2>Create Trip</h2>
 
     <form action="{{ route('trips.store') }}" method="POST">
         @csrf
 
-        <div class="mb-3">
-            <label for="driver_id" class="form-label">Driver</label>
-            <select name="driver_id" class="form-select" required>
-                <option value="">-- Select Driver --</option>
+        <div class="form-group">
+            <label for="driver_id">Driver</label>
+            <select name="driver_id" class="form-control" required>
                 @foreach($drivers as $driver)
                     <option value="{{ $driver->id }}">{{ $driver->name }}</option>
                 @endforeach
             </select>
         </div>
 
-        <div class="mb-3">
-            <label for="trip_date" class="form-label">Trip Date</label>
+        <div class="form-group mt-2">
+            <label for="trip_date">Trip Date</label>
             <input type="date" name="trip_date" class="form-control" required>
         </div>
 
-        <div class="mb-3">
-            <label for="destination" class="form-label">Destination</label>
-            <input type="text" name="destination" class="form-control" required>
+        <div class="form-group mt-2">
+            <label for="status">Status</label>
+            <select name="status" class="form-control" required>
+                <option value="pending">Pending</option>
+                <option value="in_progress">In Progress</option>
+                <option value="completed">Completed</option>
+            </select>
         </div>
 
-        <div class="mb-3">
-            <label for="sacks_delivered" class="form-label">Sacks Delivered</label>
-            <input type="number" name="sacks_delivered" class="form-control">
+        <div class="form-group mt-2">
+            <label for="notes">Notes (Optional)</label>
+            <textarea name="notes" class="form-control" rows="3"></textarea>
         </div>
 
-        <div class="mb-3">
-            <label for="amount_paid" class="form-label">Amount Paid</label>
-            <input type="number" step="0.01" name="amount_paid" class="form-control">
-        </div>
-
-        <div class="mb-3">
-            <label for="remaining_balance" class="form-label">Remaining Balance</label>
-            <input type="number" step="0.01" name="remaining_balance" class="form-control" value="0">
-        </div>
-
-        <button type="submit" class="btn btn-success">Create Trip</button>
+        <button class="btn btn-success mt-3">Save Trip</button>
     </form>
+</div>
 @endsection

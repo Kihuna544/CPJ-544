@@ -13,7 +13,7 @@ class TripController extends Controller
     // Show list of all trips
     public function index()
     {
-        $trips = Trip::with(['driver', 'journeys'])->latest()->get();
+        $trips = Trip::with(['driver', 'journeys'])->latest()->paginate(10);
         return view('trips.index', compact('trips'));
     }
 
@@ -30,12 +30,15 @@ class TripController extends Controller
         $validated = $request->validate([
             'driver_id' => 'required|exists:drivers,id',
             'trip_date' => 'required|date',
-        ]);
+            'status' => 'required|in:pending,completed',
+            'notes' => 'nullable|string|max:255',
+                ]);
 
         $trip = Trip::create([
             'driver_id' => $validated['driver_id'],
             'trip_date' => $validated['trip_date'],
             'status' => 'pending',
+            'notes' => $request->input('notes'),
         ]);
 
         // Optionally: create default town-to-bush and bush-to-town journeys here

@@ -1,42 +1,46 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>All Trips</h1>
-    <a href="{{ route('trips.create') }}" class="btn btn-primary mb-3">Create New Trip</a>
+<div class="container">
+    <h2>Trips</h2>
+    <a href="{{ route('trips.create') }}" class="btn btn-primary mb-3">Add New Trip</a>
 
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    <table class="table table-bordered">
+        <thead>
             <tr>
                 <th>ID</th>
-                <th>Date</th>
                 <th>Driver</th>
+                <th>Trip Date</th>
                 <th>Status</th>
-                <th>Sacks</th>
-                <th>Amount Paid</th>
-                <th>Balance</th>
+                <th>Notes</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($trips as $trip)
+            @foreach($trips as $trip)
                 <tr>
                     <td>{{ $trip->id }}</td>
-                    <td>{{ $trip->trip_date }}</td>
                     <td>{{ $trip->driver->name }}</td>
+                    <td>{{ $trip->trip_date }}</td>
                     <td>{{ ucfirst($trip->status) }}</td>
-                    <td>{{ $trip->sacks_delivered }}</td>
-                    <td>{{ number_format($trip->amount_paid, 2) }}</td>
-                    <td>{{ number_format($trip->remaining_balance, 2) }}</td>
+                    <td>{{ $trip->notes }}</td>
                     <td>
-                        <a href="{{ route('trips.show', $trip) }}" class="btn btn-info btn-sm">View</a>
-                        <a href="{{ route('trips.edit', $trip) }}" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="{{ route('trips.destroy', $trip) }}" method="POST" class="d-inline">
-                            @csrf @method('DELETE')
-                            <button onclick="return confirm('Are you sure?')" class="btn btn-danger btn-sm">Delete</button>
+                        <a href="{{ route('trips.edit', $trip->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <form action="{{ route('trips.destroy', $trip->id) }}" method="POST" style="display:inline-block;">
+                            @csrf
+                            @method('DELETE')
+                            <button onclick="return confirm('Delete this trip?')" class="btn btn-sm btn-danger">Delete</button>
                         </form>
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
+
+    {{ $trips->links() }}
+</div>
 @endsection

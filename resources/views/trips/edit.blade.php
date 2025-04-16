@@ -1,30 +1,42 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1 class="text-xl font-bold mb-4">Edit Trip</h1>
+<div class="container">
+    <h2>Edit Trip</h2>
 
-    <form action="{{ route('trips.update', $trip) }}" method="POST">
+    <form action="{{ route('trips.update', $trip->id) }}" method="POST">
         @csrf
         @method('PUT')
 
-        <label>Driver:</label>
-        <select name="driver_id" class="block w-full mb-2">
-            @foreach ($drivers as $driver)
-                <option value="{{ $driver->id }}" {{ $trip->driver_id == $driver->id ? 'selected' : '' }}>
-                    {{ $driver->name }}
-                </option>
-            @endforeach
-        </select>
+        <div class="form-group">
+            <label for="driver_id">Driver</label>
+            <select name="driver_id" class="form-control" required>
+                @foreach($drivers as $driver)
+                    <option value="{{ $driver->id }}" {{ $trip->driver_id == $driver->id ? 'selected' : '' }}>{{ $driver->name }}</option>
+                @endforeach
+            </select>
+        </div>
 
-        <label>Date:</label>
-        <input type="date" name="trip_date" value="{{ $trip->trip_date }}" class="block w-full mb-2">
+        <div class="form-group mt-2">
+            <label for="trip_date">Trip Date</label>
+            <input type="date" name="trip_date" class="form-control" value="{{ $trip->trip_date }}" required>
+        </div>
 
-        <label>Status:</label>
-        <select name="status" class="block w-full mb-2">
-            <option value="pending" {{ $trip->status == 'pending' ? 'selected' : '' }}>Pending</option>
-            <option value="completed" {{ $trip->status == 'completed' ? 'selected' : '' }}>Completed</option>
-        </select>
+        <div class="form-group mt-2">
+            <label for="status">Status</label>
+            <select name="status" class="form-control" required>
+                <option value="pending" {{ $trip->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                <option value="in_progress" {{ $trip->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                <option value="completed" {{ $trip->status == 'completed' ? 'selected' : '' }}>Completed</option>
+            </select>
+        </div>
 
-        <button class="btn btn-primary">Update Trip</button>
+        <div class="form-group mt-2">
+            <label for="notes">Notes (Optional)</label>
+            <textarea name="notes" class="form-control" rows="3">{{ $trip->notes }}</textarea>
+        </div>
+
+        <button class="btn btn-primary mt-3">Update Trip</button>
     </form>
+</div>
 @endsection
