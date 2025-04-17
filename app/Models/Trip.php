@@ -61,5 +61,9 @@ class Trip extends Model
     {
         return $this->hasMany(Expense::class);
     }
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
 
 }
