@@ -42,19 +42,19 @@ class Trip extends Model
     // Helper: total sacks from participations
     public function getTotalSacksAttribute()
     {
-        return $this->participations->sum('sacks_carried');
+        //return $this->participations->sum('sacks_carried');
     }
 
     // Helper: total amount paid from participations
     public function getTotalPaidAttribute()
     {
-        return $this->participations->sum('amount_paid');
+        //return $this->participations->sum('amount_paid');
     }
 
     // Helper: total balance remaining from participations
     public function getTotalBalanceAttribute()
     {
-        return $this->participations->sum('balance');
+       // return $this->participations->sum('balance');
     }
 
         public function expenses()
