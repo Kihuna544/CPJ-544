@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
-            $table->string('bussiness_name');
+            $table->string('client_name');
             $table->string('phone')->nullable()->index();
             $table->string('profile_photo')->nullable(); // Profile photo URL
             $table->timestamps();
