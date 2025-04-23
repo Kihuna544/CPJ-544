@@ -11,23 +11,34 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-
-            $table->foreignId('client_name')->constrained()->onDelete('cascade'); // from clients profile
-            $table->foreignId('trip_date')->nullable()->constrained()->onDelete('set null'); // Optional in case of global payments
-            $table->foreignId('client_sacks_carried')->constrained()->onDelete('cascade');           
-            $table->foreignId('client_packages_carried');
-            $table->foreignId('amount_to_pay')->constrained()->onDelete('cascade'); //from client_participation table
-            $table->integer('amount_paid');
-            $table->integer('amount_unpaid');
+        
+            // Relate to a client (foreign key)
+            $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
+        
+            // Relate to a trip (optional)
+            $table->foreignId('trip_id')->nullable()->constrained('trips')->onDelete('set null');
+        
+            // Relate to client participation if needed (optional)
+            $table->foreignId('client_participation_id')->nullable()->constrained('client_participations')->onDelete('set null');
+        
+            // These are just values copied or calculated from another table at the time of payment
+            $table->date('trip_date'); // manually copy from trip at the time of creation
+            $table->integer('sacks_carried');
+            $table->integer('packages_carried')->nullable();
+            $table->decimal('amount_to_pay', 8, 2); // already present
+            $table->integer('amount_paid')->default(0);
+            $table->integer('amount_unpaid')->default(0);
+        
             $table->enum('status', ['un_paid', 'partially_paid', 'paid'])->default('un_paid');
-            $table->decimal('amount', 8, 2);
-
+            $table->decimal('amount', 8, 2)->nullable(); // If needed
+        
             $table->date('payment_date');
             $table->enum('method', ['cash', 'mobile_money', 'bank', 'other'])->default('cash');
             $table->text('notes')->nullable();
-
+        
             $table->timestamps();
         });
+        
     }
 
     public function down(): void
