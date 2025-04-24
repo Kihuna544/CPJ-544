@@ -29,7 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('client_trip');  // Drop pivot table first
         Schema::dropIfExists('trips');
     }
 };
