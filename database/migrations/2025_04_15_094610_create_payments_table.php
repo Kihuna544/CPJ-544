@@ -39,7 +39,9 @@ return new class extends Migration
             $table->date('payment_date');
             $table->enum('method', ['cash', 'mobile_money', 'bank', 'other'])->default('cash');
             $table->text('notes')->nullable();
-        
+            
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
         

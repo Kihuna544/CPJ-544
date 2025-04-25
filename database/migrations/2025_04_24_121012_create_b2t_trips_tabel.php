@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('driver_id')->constrained('drivers')->onDelete('set null');
             $table->date('trip_date');
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
 
         });
@@ -30,6 +32,8 @@ return new class extends Migration
             $table->unsignedInteger('no_of_sacks_per_client');
             $table->unsignedInteger('no_of_packages_per_client');
             $table->decimal('amount_to_pay_for_b2t', 8, 2)->default(0.00);
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
     }

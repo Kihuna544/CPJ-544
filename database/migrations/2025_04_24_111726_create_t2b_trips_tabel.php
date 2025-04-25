@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('driver_id')->constrained('drivers')->onDelete('set null');
             $table->foreignId('client_id')->constrained('temporary_clients')->onDelete('cascade');
             $table->date('trip_date');
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
 
@@ -24,7 +26,9 @@ return new class extends Migration
             $table->foreigId('t2b_trip_id')->constrained('t2b_trips_table')->onDelete('cascade');
             $tabel->foreignId('client_id')->constrained('temporary_clients')->onDelete('cascade');
             $table->decimal('amount_to_pay_for_t2b', 8, 2)->default(0);
-            $table->timestamps();
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->timestamps(); 
         });
 
         Schema::create('t2b_trips_items', function(Blueprint $table){
@@ -32,6 +36,8 @@ return new class extends Migration
             $table->foreignId('t2b_trip_client_id')->constrained('t2b_trips_clients')->onDelete('cascade');
             $table->string('item_name');
             $table->unsignedInteger('quantity');
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
     }
