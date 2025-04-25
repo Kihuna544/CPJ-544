@@ -11,11 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //b2t clients mostly permanet ones.
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->string('client_name');
-            $table->string('phone')->nullable()->index();
+            $table->string('phone')->index();
             $table->string('profile_photo')->nullable(); // Profile photo URL
+            $table->timestamps();
+        });
+
+        //t2b clients mostly temporary ones.
+        Schema::create('temporary_clients', function (Blueprint $table) {
+            $table->id();
+            $table->string('client_name');
+            $table->string('phone')->index();
             $table->timestamps();
         });
     }

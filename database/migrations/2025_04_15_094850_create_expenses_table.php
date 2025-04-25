@@ -11,7 +11,6 @@ return new class extends Migration
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('journey_id')->constrained()->onDelete('cascade'); // Each expense belongs to a journey
             $table->string('category'); // e.g. fuel, maintenance, food, parking
             $table->decimal('amount', 8, 2);
             $table->date('expense_date')->nullable(); // When the expense happened
