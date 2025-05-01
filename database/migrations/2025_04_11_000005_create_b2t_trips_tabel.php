@@ -6,29 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-
-        Schema::create('b2t_trips_tabel', function (Blueprint $table) {
-
+        Schema::create('b2t_trips_table', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('driver_id')->constrained('drivers')->onDelete('set null');
+            $table->foreignId('driver_id')->nullable()->constrained('drivers')->onDelete('set null');
             $table->date('trip_date');
+            $table->unsignedBigInteger('total_number_of_sacks');
+            $table->unsignedBigInteger('total_number_of_packages');
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
-
         });
 
-
-        Schema::create('b2t_trip_client', function(Blueprint $table){
+        Schema::create('b2t_trip_clients', function(Blueprint $table){
             $table->id();
-            $table->foreignId('b2t_trips_id')->constrained('b2t_trips_table')->onDelete('cascade');
-            $table->foreignId('b2t_trip_client_id')->constrained('clients')->onDelete('cascade');
+            $table->foreignId('b2t_trip_id')->constrained('b2t_trips_table')->onDelete('cascade');
             $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
+            $table->string('client_name'); // filled in here directly from the client table.
             $table->unsignedInteger('no_of_sacks_per_client');
             $table->unsignedInteger('no_of_packages_per_client');
             $table->decimal('amount_to_pay_for_b2t', 8, 2)->default(0.00);
@@ -38,12 +33,9 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('b2t_trips_tabel');
-        Schema::dropIfExists('b2t_trip_client');
+        Schema::dropIfExists('b2t_trip_clients');
+        Schema::dropIfExists('b2t_trips_table');
     }
 };
