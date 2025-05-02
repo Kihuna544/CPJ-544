@@ -13,6 +13,7 @@ return new class extends Migration
 
             $table->id();
             $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
+            $table->foreignId('temporary_client_id')->nullable()->constrained('temporary_clients')->onDelete('set null');
             $table->foreignId('t2b_trip_client_id')->nullable()->constrained('t2b_trip_clients')->onDelete('set null');
             $table->foreignId('b2t_trip_client_id')->nullable()->constrained('b2t_trip_clients')->onDelete('set null');
             $table->foreignId('special_trip_client_id')->nullable()->constrained('special_trip_clients')->onDelete('set null');

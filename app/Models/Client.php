@@ -16,8 +16,15 @@ class Client extends Model
         'profile_photo',
     ];
 
-    public function t2bTrips()
+
+    public function b2tTrips()
     {
-        return $this->belongsToMany(B2tTrip::class, b2t_trip_clients);
+        return $this->belongsToMany(B2tTrip::class, 'b2t_trip_clients');
+    }
+
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
     }
 }
