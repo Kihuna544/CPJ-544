@@ -27,4 +27,9 @@ class B2tClient extends Model
     {
         return $this->belongsTo(B2tTrip::class);
     }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
 }
