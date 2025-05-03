@@ -18,11 +18,18 @@ class Trip extends Model
         'trip_details',
     ];
 
+
+
+
     // A trip may belong to a driver
     public function driver()
     {
         return $this->belongsTo(Driver::class);
     }
+
+
+
+
 
     // If this is a child trip (T2B or B2T), it belongs to a parent trip
     public function parentTrip()
@@ -36,17 +43,25 @@ class Trip extends Model
         return $this->hasMany(Trip::class, 'parent_trip_id');
     }
 
-    // Helper to get the T2B child trip of a normal trip
+
+
+
+
+    // Helper to get the first T2B child trip of a normal trip
     public function t2bChild()
     {
         return $this->childTrips()->where('direction', 't2b')->first();
     }
 
-    // Helper to get the B2T child trip of a normal trip
+    // Helper to get the first B2T child trip of a normal trip
     public function b2tChild()
     {
         return $this->childTrips()->where('direction', 'b2t')->first();
     }
+
+
+
+
 
     // Helper to check if this trip is a parent trip
     public function isParent()
@@ -66,6 +81,9 @@ class Trip extends Model
         return $this->direction === 'b2t';
     }
 
+
+
+    
     // Scope: get only parent trips (normal trips)
     public function scopeParentTrips($query)
     {
