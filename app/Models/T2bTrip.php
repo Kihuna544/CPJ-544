@@ -16,8 +16,18 @@ class T2bTrips extends Model
     ];
 
 
-    public function t2bclients()
+    public function drivers()
     {
-        return this->hasMany(T2bClients::class);
+        return this->belongsTo(Driver::class);
+    }
+
+    public function t2bClients()
+    {
+        return $this->belongsTo(TemporaryClient::class ,'t2b_trip_clients');
+    }
+
+    public function t2bClientItems()
+    {
+        return $this->hasMany(T2bClientItem::class);
     }
 }
