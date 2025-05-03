@@ -19,7 +19,7 @@ class B2tTrip extends Model
 
     public function b2tClient()
     {
-        return $this->belongsTo(TemporaryClient::class, 'b2t_trip_clients');
+        return $this->belongsTo(Client::class, 'b2t_trip_clients');
     }
 
     public function drivers()
