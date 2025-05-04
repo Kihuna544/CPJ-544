@@ -16,7 +16,7 @@ class SpecialTripClient extends Model
         'updated_by',
     ];
 
-    public function specialTripClient()
+    public function specialTripClients()
     {
         return $this->belongsTo(TemporaryClient::class ,'special_trip_clients');
     }
