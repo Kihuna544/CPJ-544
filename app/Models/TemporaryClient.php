@@ -27,4 +27,9 @@ class TemporaryClient extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
+    public function paymentTransactions()
+    {
+        return $this->hasMany(PaymentTransaction::class);
+    }
 }

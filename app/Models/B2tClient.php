@@ -32,4 +32,9 @@ class B2tClient extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
+    public function paymentTransaction()
+    {
+        return $this->hasMany(PaymentTransaction::class);
+    }
 }

@@ -40,6 +40,11 @@ return new class extends Migration
         Schema::create('payment_transactions', function (Blueprint $table){
             $table->id();
             $table->foreignId('payment_id')->constrained('payments')->onDelete('cascade');
+            $table->foreignId('client')->nullable()->constrained('clients')->onDelete('set null');
+            $table->foreignId('temporary_client_id')->nullable()->constrained('temparary_clients')->onDelete('set null');
+            $table->foreignId('t2b_client_payment_id')->nullable()->constrained('t2b_trip_clients')->onDelete('set null');
+            $table->foreignId('b2t_client_payment_id')->nullable()->constrained('b2t_trip_clients')->onDelete('set null');
+            $table->foreignId('special_trip_client_payment_id')->nullable()->constrained('special_trip_clients')->onDelete('set null');
             $table->decimal('amount_paid', 8, 2)->default(0);
             $table->date('payment_date');
             $table->enum('method', ['cash', 'mobile_money', 'bank', 'other'])->default('cash');

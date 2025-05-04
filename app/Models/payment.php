@@ -49,4 +49,9 @@ class Payment extends Model
     {
         return $this->belongsTo(SpecialTripClient::class);
     }
+
+    public function transactions()
+    {
+        return $this->hasMany(PaymentTransaction::class);
+    }
 }

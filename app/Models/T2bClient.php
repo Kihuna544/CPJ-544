@@ -30,10 +30,19 @@ class T2bClient extends Model
     }
 
 
-
     public function clientItem()
     {
         return $this->hasMany(T2bClientItem::class);
+    }
+
+    public function paymentTransactions()
+    {
+        return $this->hasMany(PaymentTransaction::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
     }
 
 
