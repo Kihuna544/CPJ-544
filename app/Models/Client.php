@@ -10,6 +10,10 @@ use Illuminate\Database\Eloquent\Model;
 class Client extends Model
 {
     //
+    protected $table = 'clients';
+
+    use softDeletes;
+
     protected $fillable = [
         'client_name',
         'phone',
@@ -22,8 +26,4 @@ class Client extends Model
         return $this->hasMany(B2tTripClient::class, 'client_id');
     }
 
-    public function payments()
-    {
-        return $this->hasMany(Payment::class);
-    }
 }

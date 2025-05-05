@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class B2tExpenses extends Model
+class SpecialTripExpense extends Model
 {
     //
-    protected $table = 'b2t_expenses';
+    protected $table = 'special_trip_expenses';
     
     protected $fillable = [
         'expense_date',
-        'b2t_trip_id',
+        'special_trip_id',
         'category',
         'amount',
         'notes',
@@ -19,8 +19,8 @@ class B2tExpenses extends Model
         'updated_by',
     ];
 
-    public function b2tTrip()
+    public function specialTrip()
     {
-        return $this->belongsTo(B2tTrip::class, 'b2t_trip_id');
+        return $this->belongsTo(SpecialTrip::class, 'special_trip_id');
     }
 }

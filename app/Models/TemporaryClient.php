@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class TemporaryClient extends Model
 {
     //
+    protected $table = 'temporary_clients';
+
     protected $fillable = [
         'client_name',
         'phone'
@@ -15,21 +17,11 @@ class TemporaryClient extends Model
 
     public function t2bCLients()
     {
-        return $this->hasMany(T2bClient::class, 'client_id');
+        return $this->hasMany(T2bClient::class, 'temporary_client_id');
     }
 
     public function specialTripClients()
     {
-        return $this->hasMany(SpecialTripClient::class, 'client_id');
-    }
-
-    public function payments()
-    {
-        return $this->hasMany(Payment::class);
-    }
-
-    public function paymentTransactions()
-    {
-        return $this->hasMany(PaymentTransaction::class);
+        return $this->hasMany(SpecialTripClient::class, 'temporary_client_id');
     }
 }

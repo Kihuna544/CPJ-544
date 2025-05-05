@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class B2tClient extends Model
 {
     //
+    protected $table = 'b2t_trip_clients';
+
     protected $fillable= [
         'b2t_trip_id',
         'client_id',

@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class B2tTrip extends Model
 {
     //
+    protected $table = 'b2t_trips_table';
+    
     protected $fillable = [
         'driver_id',
         'trip_date',

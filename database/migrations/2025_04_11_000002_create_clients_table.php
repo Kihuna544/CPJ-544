@@ -14,9 +14,10 @@ return new class extends Migration
         //b2t clients mostly permanet ones.
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
-            $table->string('client_name');
+            $table->string('client_name')->index();
             $table->string('phone')->index();
             $table->string('profile_photo')->nullable(); // Profile photo URL
+            $table->softDeletes();
             $table->timestamps();
         });
 

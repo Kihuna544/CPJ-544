@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class T2bExpenses extends Model
+class T2bExpense extends Model
 {
     //
-    protected $table = 't2b_expenses';
+    protected $table = 't2b_trip_expenses';
 
     protected $fillable = [
         'expense_date',
