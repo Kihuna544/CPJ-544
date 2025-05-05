@@ -13,14 +13,14 @@ class TemporaryClient extends Model
         'phone'
     ];
 
-    public function t2bTrips()
+    public function t2bCLients()
     {
-        return $this->belongsToMany(T2bTrip::class, 't2b_trip_clients');
+        return $this->hasMany(T2bClient::class, 'client_id');
     }
 
-    public function specialTrips()
+    public function specialTripClients()
     {
-        return $this->belongsToMany(SpecialTrip::class, 'special_trip_clients');
+        return $this->hasMany(SpecialTripClient::class, 'client_id');
     }
 
     public function payments()

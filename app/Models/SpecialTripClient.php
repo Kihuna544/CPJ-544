@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class SpecialTripClient extends Model
 {
     //
+    protected $table = 'special_trip_clients';
+
     protected $fillable = [
         'special_trip_id',
         'client_id',
@@ -16,28 +18,28 @@ class SpecialTripClient extends Model
         'updated_by',
     ];
 
-    public function specialTripClients()
+    public function client()
     {
-        return $this->belongsTo(TemporaryClient::class ,'special_trip_clients');
+        return $this->belongsTo(TemporaryClient::class ,'client_id');
     }
 
-    public function specialTrips()
+    public function specialTrip()
     {
-        return $this->belongsTo(SpecialTrip::class);
+        return $this->belongsTo(SpecialTrip::class, 'special_trip_id');
     }
 
-    public function specialTripItems()
+    public function specialTripClientItems()
     {
-        return $this->hasMany(SpecialTripItem::class);
+        return $this->hasMany(SpecialTripClientItem::class, 'special_trip_client_id');
         
     }
     public function payments()
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(Payment::class, 'special_trip_client_id');
     }
 
     public function paymentTransactions()
     {
-        return $this->hasMany(PaymentTransaction::class);
+        return $this->hasMany(PaymentTransaction::class, 'special_trip_client_payment_id');
     }
 }

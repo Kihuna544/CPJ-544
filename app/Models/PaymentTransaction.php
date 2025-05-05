@@ -7,8 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class PaymentTransaction extends Model
 {
     //
+    protected $table = 'payment_transactions';
+
     protected $fillable = [
         'payment_id',
+        't2b_client_payment_id',
+        'b2t_client_payment_id',
+        'special_trip_client_payment_id',
         'amount_paid',
         'payment_date',
         'method',
@@ -17,34 +22,25 @@ class PaymentTransaction extends Model
         'updated_by',
     ];
 
-    public function payments()
+    public function payment()
     {
-        return $this->belongsTo(Payment::class);
+        return $this->belongsTo(Payment::class, 'payment_id');
     }
 
-    public function clients()
+
+    public function t2bClient()
     {
-        return $this->belongsTo(Client::class, 'payments');
+        return $this->belongsTo(T2bClient::class, 't2b_client_payment_id');
     }
 
-    public function temporaryClients()
+    public function b2tClient()
     {
-        return $this->belongsTo(TemporaryClient::class, 'payments');
+        return $this->belongsTo(B2tClient::class, 'b2t_client_payment_id');
     }
 
-    public function t2bClients()
+    public function specialTripClient()
     {
-        return $this->belongsTo(T2bClient::class);
-    }
-
-    public function b2tClients()
-    {
-        return $this->belongsTo(B2tClient::class);
-    }
-
-    public function specialTripClients()
-    {
-        return $this->belongsTo(SpecialTripClient::class);
+        return $this->belongsTo(SpecialTripClient::class, 'special_trip_client_payment_id');
     }
 }
 

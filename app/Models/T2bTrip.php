@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class T2bTrips extends Model
+class T2bTrip extends Model
 {
     //
+    protected $table = 't2b_trips_table';
+
     protected $fillable = [
         'driver_id',
         'trip_date',
@@ -17,18 +19,23 @@ class T2bTrips extends Model
     ];
 
 
-    public function drivers()
+    public function driver()
     {
-        return this->belongsTo(Driver::class);
+        return $this->belongsTo(Driver::class);
     }
 
-    public function t2bClients()
+    public function t2bTripClients()
     {
-        return $this->belongsTo(TemporaryClient::class ,'t2b_trip_clients');
+        return $this->hasMany(T2bTripClient::class ,'t2b_trip_id');
     }
 
     public function t2bClientItems()
     {
-        return $this->hasMany(T2bClientItem::class);
+        return $this->hasMany(T2bClientItem::class, 't2b_trip_id');
+    }
+
+    public function t2bExpenses()
+    {
+        return $this->hasMany(T2bEpenses::class, 't2b_trip_id');
     }
 }

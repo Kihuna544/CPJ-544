@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class T2bClientItem extends Model
 {
-    protected $filllable =
+    protected $table = 't2b_trip_items';
+    
+    protected $fillable =
      [
-        'client_id',
+        't2b_client_id',
         't2b_trip_id',
         'quantity',
         'created_by',
@@ -17,13 +19,13 @@ class T2bClientItem extends Model
     ];
 
 
-    public function t2bClients()
+    public function t2bClient()
     {
-        return $this->belongsTo(TemporaryClient::class, 't2b_trip_clients');
+        return $this->belongsTo(T2bClient::class, 't2b_client_id');
     }
 
-    public function t2bTrips()
+    public function t2bTrip()
     {
-        return $this->belongsTo(T2bTrip::class);
+        return $this->belongsTo(T2bTrip::class, 't2b_trip_id');
     }
 }

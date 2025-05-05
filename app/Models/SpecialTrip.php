@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class SpecialTrip extends Model
 {
     //
+    protected $table = 'special_trips_table';
+
     protected $fillable = [
         'driver_id',
         'client_id',
@@ -17,18 +19,19 @@ class SpecialTrip extends Model
         'updated_by',
     ];
 
-    public function specialTripClients()
-    {
-        return $this->belongsToMany(TemporaryClient::class, 'special_trip_clients');
-    }
 
-    public function drivers()
+    public function driver()
     {
-        return $this->belongsTo(Driver::class);
+        return $this->belongsTo(Driver::class,'driver_id');
     }
 
     public function specialTripItems()
     {
-        return $this->hasMany(SpecialTripItem::class);
+        return $this->hasMany(SpecialTripItem::class, 'special_trip_id');
+    }
+
+    public function specialTripClients()
+    {
+        return $this->hasMany(SpecialTripClient::class, 'special_trip_id');
     }
 }

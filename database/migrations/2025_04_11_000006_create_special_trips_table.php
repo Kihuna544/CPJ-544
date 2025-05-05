@@ -32,8 +32,9 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('special_trips_items', function (Blueprint $table){
+        Schema::create('special_trip_items', function (Blueprint $table){
             $table->id();
+            $table->foreignId('special_trip_id')->nullable()->constrained('special_trips')->onDelete('set null');
             $table->foreignId('special_trip_client_id')->constrained('special_trip_clients')->onDelete('cascade');
             $table->string('item_name');
             $table->unsignedInteger('quantity');
@@ -45,7 +46,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('special_trips_items');
+        Schema::dropIfExists('special_trip_items');
         Schema::dropIfExists('special_trip_clients');
         Schema::dropIfExists('special_trips');
     }

@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class T2bClient extends Model
 {
     //
+    protected $table = 't2b_trip_clients'; 
+
     protected $fillable = [
         't2b_trip_id',
         'client_id',
@@ -19,30 +21,30 @@ class T2bClient extends Model
 
 
 
-    public function t2bClients()
+    public function temporaryClient()
     {
-        return $this->belongsToMany(TemporaryClient::class ,'t2b_client_table');
+        return $this->belongsTo(TemporaryClient::class ,'client_id');
     }
     
-    public function t2bTrips()
+    public function t2bTrip()
     {
-        return $this->hasMany(T2bTrip::class);
+        return $this->belongsTo(T2bTrip::class, 't2b_trip_id');
     }
 
 
     public function clientItem()
     {
-        return $this->hasMany(T2bClientItem::class);
+        return $this->hasMany(T2bClientItem::class, 't2b_client_id');
     }
 
     public function paymentTransactions()
     {
-        return $this->hasMany(PaymentTransaction::class);
+        return $this->hasMany(PaymentTransaction::class, 't2b_client_payment_id');
     }
 
     public function payments()
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(Payment::class, 't2b_trip_client_id');
     }
 
 

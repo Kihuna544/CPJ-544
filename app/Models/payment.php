@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
     //
+    protected $table = 'payments';
+
     protected $fillable =[
-        'client_id',
-        'temporary_client_id',
         't2b_trip_client_id',
         'b2t_trip_client_id',
         'special_trip_client_id',
@@ -25,33 +25,29 @@ class Payment extends Model
         'updated_by',
     ];
 
-    public function client()
+
+    public function t2bClient()
     {
-        return $this->belongsTo(Client::class);
-    }
-    
-    public function temporaryClients()
-    {
-        return $this->belongsTo(TemporaryClient::class);
+        return $this->belongsTo(T2bClient::class, 't2b_trip_client_id');
     }
 
-    public function t2bClients()
+    public function b2tClient()
     {
-        return $this->belongsTo(T2bClient::class);
+        return $this->belongsTo(B2tClient::class, 'b2t_trip_client_id');
     }
 
-    public function b2tClients()
+    public function specialTripClient()
     {
-        return $this->belongsTo(B2tClient::class);
+        return $this->belongsTo(SpecialTripClient::class, 'special_trip_client_id');
     }
 
-    public function specialTripClients()
+    public function paymentTransactions()
     {
-        return $this->belongsTo(SpecialTripClient::class);
+        return $this->hasMany(PaymentTransaction::class, 'payment_id');
     }
 
-    public function transactions()
+    public function getTotalPaidAttribute()
     {
-        return $this->hasMany(PaymentTransaction::class);
+        return $this->paymentTransactions->sum('amount_paid');
     }
 }
