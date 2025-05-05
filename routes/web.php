@@ -6,9 +6,6 @@ use App\Http\Controllers\DriverController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\ExpenseController;
-use App\Http\Controllers\JourneyController;
-use App\Http\Controllers\ClientParticipationController;
-use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
