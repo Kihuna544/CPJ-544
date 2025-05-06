@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class B2tClient extends Model
+class B2tTripClient extends Model
 {
     //
     protected $table = 'b2t_trip_clients';

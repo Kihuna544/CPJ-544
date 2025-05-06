@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class T2bClient extends Model
+class T2bTripClient extends Model
 {
     //
     protected $table = 't2b_trip_clients'; 
