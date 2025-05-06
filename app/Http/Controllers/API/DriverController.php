@@ -19,17 +19,35 @@ class DriverController extends Controller
             'name' => 'required|string',
             'phone' => 'required|string|unique:drivers,phone',
             'license_number' => 'required|string|unique:drivers,license_number',
-            'profile_photo' => 'nullable|string',
+            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'profile_photo_camera' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+
+    $photoPath = null;
+
+    if($request->hasFile('profile_photo')) {
+        $photoPath = $request->file('profile_photo')->store('drivers', 'public');
+    }
+
+    if ($request->hasFile('profile_photo_camera')) {
+        $photoPath = $request->file('profile_photo_camera')->store('drivers', 'public');
+    }
+
+    if ($photoPath) {
+        $validated['profile_photo'] = $photoPath;
+    }
 
         $driver = Driver::create($validated);
         return response()->json($driver, 201);
     }
 
+
     public function show($id)
     {
         return Driver::findOrFail($id);
     }
+
 
     public function update(Request $request, $id)
     {
@@ -46,6 +64,7 @@ class DriverController extends Controller
         return response()->json($driver);
     }
 
+    
     public function destroy($id)
     {
         Driver::findOrFail($id)->delete();
