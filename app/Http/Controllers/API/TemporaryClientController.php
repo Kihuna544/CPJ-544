@@ -26,9 +26,9 @@ class TemporaryClientController extends Controller
     }
 
 
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        return TemporaryClient::findOrFail($id);
     }
 
     /**
