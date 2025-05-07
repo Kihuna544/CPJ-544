@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Contrllers\Controller;
+use App\Http\Controllers\Controller;
 use App\Models\Client;
 use  Illuminate\Http\Request;
 
-class ClientController extends Controllers {
+class ClientController extends Controller {
 
     public function index() {
-        return Driver::all;
+        
+        return Client::all();
     }
 
     public function store(Request $request) {

@@ -12,8 +12,6 @@ class Client extends Model
     //
     protected $table = 'clients';
 
-    use softDeletes;
-
     protected $fillable = [
         'client_name',
         'phone',
