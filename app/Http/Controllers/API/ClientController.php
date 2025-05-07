@@ -47,5 +47,11 @@ class ClientController extends Controller {
     {
         return Client::findOrFail($id);
     }  
-}
 
+    public function destroy($id) 
+    {
+        Client::findOrFail($id)->delete();
+        return response()->with->json(['message' => 'Client deleted']);
+    }
+
+}
