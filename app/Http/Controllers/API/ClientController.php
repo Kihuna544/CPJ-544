@@ -17,7 +17,7 @@ class ClientController extends Controller {
 
         $validated = $request->validate ([
             'client_name' => 'required|string',
-            'phone' => 'required|string|unique:drivers, phone',
+            'phone' => 'required|string|unique:client, phone',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'profile_photo_camera' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
