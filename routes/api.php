@@ -10,4 +10,4 @@ use App\Http\Controllers\API\TemporaryClientController;
 
 Route::apiResource('/drivers', DriverController::class);
 Route::apiResource('/clients', ClientController::class);
-Route::apiResource('/temporaryClient', TemporaryClientController::class);
+Route::apiResource('/temporaryClients', TemporaryClientController::class);
