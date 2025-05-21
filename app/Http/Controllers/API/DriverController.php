@@ -31,7 +31,7 @@ class DriverController extends Controller
         $photoPath = $request->file('profile_photo')->store('drivers', 'public');
     }
 
-    if ($request->hasFile('profile_photo_camera')) {
+    elseif ($request->hasFile('profile_photo_camera')) {
         $photoPath = $request->file('profile_photo_camera')->store('drivers', 'public');
     }
 
@@ -68,7 +68,7 @@ class DriverController extends Controller
 
         elseif($request->hasFile('profile_photo_camera'))
         {
-            if($driver->profile_photo_camera)
+            if($driver->profile_photo)
             {
                 \Storage::disk('public')->delete($driver->profile_photo);
             }
