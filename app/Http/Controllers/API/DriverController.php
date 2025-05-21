@@ -13,6 +13,7 @@ class DriverController extends Controller
         return Driver::all();
     }
 
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -43,12 +44,6 @@ class DriverController extends Controller
     }
 
 
-    public function show($id)
-    {
-        return Driver::findOrFail($id);
-    }
-
-
     public function update(Request $request, $id)
     {
         $driver = Driver::findOrFail($id);
@@ -57,14 +52,46 @@ class DriverController extends Controller
             'name' => 'sometimes|required|string',
             'phone' => 'sometimes|required|string|unique:drivers,phone,' . $id,
             'license_number' => 'sometimes|required|string|unique:drivers,license_number,' . $id,
-            'profile_photo' => 'nullable|string',
+            'profile_photo' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:2048',
+            'profile_photo_camera' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:2048',
         ]);
 
+        if ($request->hasFile('profile_photo'))
+        {
+            if($driver->profile_photo)
+            {
+                \Storage::disk('public')->delete($driver->profile_photo);
+            }
+
+            $photoPath = $request->file('profile_photo')->store('drivers', 'public');
+        }
+
+        elseif($request->hasFile('profile_photo_camera'))
+        {
+            if($driver->profile_photo_camera)
+            {
+                \Storage::disk('public')->delete($driver->profile_photo);
+            }
+
+            $photoPath = $request->file('profile_photo_camera')->store('drivers', 'public');
+        }
+
+        if($photoPath)
+        {
+            $validated['profile_photo'] = $photoPath;
+        }
+
         $driver->update($validated);
-        return response()->json($driver);
+        return response()->json($driver, 200);
     }
 
     
+    public function show($id)
+    {
+        return Driver::findOrFail($id);
+    }
+
+
     public function destroy($id)
     {
         Driver::findOrFail($id)->delete();
