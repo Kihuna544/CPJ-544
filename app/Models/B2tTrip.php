@@ -19,12 +19,12 @@ class B2tTrip extends Model
         'updated_by',
     ];
 
-    public function b2tClient()
+    public function b2tTripClients()
     {
-        return $this->belongsTo(Client::class, 'b2t_trip_clients');
+        return $this->hasMany(B2tTripClient::class, 'b2t_trip_id');
     }
 
-    public function drivers()
+    public function driver()
     {
         return $this->belongsTo(Driver::class);
     }

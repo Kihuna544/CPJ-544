@@ -9,16 +9,23 @@ use Illuminate\Http\Request;
 
 class T2bTripController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return T2bTrip::all();
+        $perPage = $request->query('per_page', 10);
+
+        $t2bTrip = T2bTrip::with(['driver', 't2bTripClients', 't2bClientItems', 't2bExpenses'])
+                    ->orderByDesc('trip_date')
+                    ->paginate($perPage);
+
+        return response()->json($t2bTrip);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate
         ([
-
+            'driver_id' => 'required|exists:drivers,id',
+            'trip_date' => 'required|date',
         ]);
 
         $t2bTrip = T2bTrip::create($validated);
@@ -31,7 +38,8 @@ class T2bTripController extends Controller
 
         $validated = $request->validate
         ([
-
+            'driver_id' => 'required|exists:driver,id',
+            'trip_date' => 'required|date',
         ]);
 
         $t2bTrip->update($validated);
