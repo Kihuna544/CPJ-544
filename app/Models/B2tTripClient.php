@@ -20,7 +20,7 @@ class B2tTripClient extends Model
         'updated_by',
     ];
 
-    public function b2tClient()
+    public function client()
     {
         return $this->belongsToMany(Client::class, 'b2t_trip_clients');
     }
