@@ -23,7 +23,7 @@ class SpecialTripClientItem extends Model
         return $this->belongsTo(SpecialTripClient::class, 'special_trip_client_id');
     }
 
-    public function specialTrips()
+    public function specialTrip()
     {
         return $this->belongsTo(SpecialTrip::class, 'special_trip_id');
     }
