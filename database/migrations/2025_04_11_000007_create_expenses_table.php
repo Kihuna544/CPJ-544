@@ -7,10 +7,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('t2b_trip_expenses', function (Blueprint $table) {
+
+        Schema::create('expenses', function (Blueprint $table) {
             $table->id();          
             $table->date('expense_date')->index(); 
-            $table->foreignId('t2b_trip_id')->nullable()->constrained('t2b_trips_table')->onDelete('set null');
+            $table->foreignId('trip_id')->nullable()->constrained('trips')->onDelete('set null');
             $table->string('category'); // e.g. fuel, maintenance, food, parking
             $table->decimal('amount', 8, 2);
             $table->text('notes')->nullable();
@@ -19,19 +20,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('b2t_trip_expenses', function (Blueprint $table) {
-            $table->id();          
-            $table->date('expense_date')->index(); 
-            $table->foreignId('b2t_trip_id')->nullable()->constrained('b2t_trips_table')->onDelete('set null');
-            $table->string('category'); // e.g. fuel, maintenance, food, parking
-            $table->decimal('amount', 8, 2);
-            $table->text('notes')->nullable();
-            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->timestamps();
-        });
-
-        Schema::create('special_trip_expenses', function (BLueprint $table) {
+        Schema::create('special_trip_expenses', function (Blueprint $table) {
             $table->id();          
             $table->date('expense_date')->index(); 
             $table->foreignId('special_trip_id')->nullable()->constrained('special_trips')->onDelete('set null');
@@ -48,7 +37,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('special_trip_expenses');
-        Schema::dropIfExists('b2t_trip_expenses');
-        Schema::dropIfExists('t2b_trip_expenses');
+        Schema::dropIfExists('expenses');
     }
 };

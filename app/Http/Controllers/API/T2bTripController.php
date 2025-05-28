@@ -13,12 +13,13 @@ class T2bTripController extends Controller
     {
         $perPage = $request->query('per_page', 10);
 
-        $t2bTrip = T2bTrip::with(['driver', 't2bTripClients', 't2bClientItems', 't2bExpenses'])
+        $t2bTrip = T2bTrip::with(['driver', 't2bTripClients', 't2bClientItems'])
                     ->orderByDesc('trip_date')
                     ->paginate($perPage);
 
         return response()->json($t2bTrip);
     }
+
 
     public function store(Request $request)
     {
@@ -28,32 +29,41 @@ class T2bTripController extends Controller
             'trip_date' => 'required|date',
         ]);
 
+        $validated['created_by'] = auth()->id();
         $t2bTrip = T2bTrip::create($validated);
-        return response()->json($t2bTrip, 201);
+
+        return response()->json($t2bTrip->load('driver', 't2bTripClients', 't2bClientItems'), 201);
     }
 
-    public function update(Request $request, $id)
-    {
-        $t2bTrip = T2bTrip::findOrFail($id);
 
+    public function update(Request $request, T2bTrip $t2bTrip)
+    {
         $validated = $request->validate
         ([
-            'driver_id' => 'required|exists:driver,id',
+            'driver_id' => 'required|exists:drivers,id',
             'trip_date' => 'required|date',
         ]);
 
+        $validated['updated_by'] = auth()->id();
         $t2bTrip->update($validated);
-        return response()->json($t2bTrip, 200);
+
+        return response()->json($t2bTrip->load('driver', 't2bTripClients', 't2bClientItems'), 200);
     }
 
-    public function show($id)
+
+    public function show(T2bTrip $t2bTrip)
     {
-        return T2bTrip::findOrFail($id);
+        return response()->json($t2bTrip->load('driver', 't2bTripClients', 't2bClientItems'));
     }
 
-    public function destroy($id) 
+
+    public function destroy(T2bTrip $t2bTrip) 
     {
-        T2bTrip::findOrFail($id)->delete();
-        return response()->json(['message' => 'Trip deleted']);
+        $t2bTrip->delete();
+        return response()->json
+            ([
+                'message'=> 'Trip deleted successfully',
+                'trip' => $t2bTrip->load('driver', 't2bTripClients', 't2bClientItems'),
+            ]);
     }
 }

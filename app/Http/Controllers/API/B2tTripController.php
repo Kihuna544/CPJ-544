@@ -14,7 +14,7 @@ class B2tTripController extends Controller
         $perPage = $request->query('per_page', 10);
 
         $b2tTrip = B2tTrip::with('b2tTripClients', 'driver')
-                ->latest()
+                ->OrderByDesc('trip_date')
                 ->paginate($perPage);
 
         return response()->json($b2tTrip);
@@ -75,9 +75,10 @@ class B2tTripController extends Controller
             'total_number_of_packages' => $b2tTrip->b2tTripClients()->sum('no_of_packages_per_client'),
         ]);
 
+
         return response()->json
         ([
-            'message' => 'Totals updated successfully',
+            'message' => 'Total updated successfully',
             'trip' => $b2tTrip->load('b2tTripClients', 'driver'),
         ]);
     }

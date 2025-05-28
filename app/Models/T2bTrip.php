@@ -34,8 +34,5 @@ class T2bTrip extends Model
         return $this->hasMany(T2bClientItem::class, 't2b_trip_id');
     }
 
-    public function t2bExpenses()
-    {
-        return $this->hasMany(T2bEpenses::class, 't2b_trip_id');
-    }
+
 }
