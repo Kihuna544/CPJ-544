@@ -9,9 +9,14 @@ use Illuminate\Http\Request;
 class T2bTripClientController extends Controller
 {
     
-    public function index()
+    public function index(Request $request)
     {
-        return T2bTripClient::all();
+        $perPage = $request->query('per_page', 10);
+        $t2bTripClient = T2bTripClient::with('temporaryClient', 't2bTrip', 'clientItems', 'paymentTransactions', 'payments')
+                ->latest()
+                ->paginate($perPage);
+
+                return response()->json($t2bTripClient);
     }
 
 
@@ -19,37 +24,51 @@ class T2bTripClientController extends Controller
     {
         $validated = $request->validate
         ([
-
+            't2b_trip_id' => 'required|exists:t2b_trips,id',
+            'client_id' => 'required|exists:temporary_clients,id',
+            'client_name' => 'required|string|max:255',
+            'amount_to_pay_for_t2b' => 'required|numeric|min:0',
         ]);
 
+        $validated['created_by'] = auth()->id();
         $t2bTripClient = T2bTripClient::create($validated);
-        return response()->json($t2bTripClient, 201);
+
+        return response()->json($t2bTripClient->load('temporaryClient', 't2bTrip', 'clientItems', 'paymentTransactions', 'payments'), 201);
     }
 
 
-    public function update(Request $request, $id)
+    public function update(Request $request, T2bTripClient $t2bTripClient)
     {
         $validated = $request->validate
         ([
-
+            't2b_trip_id' => 'required|exists:t2b_trips,id',
+            'client_id' => 'required|exists:temporary_clients,id',
+            'client_name' => 'required|string|max:255',
+            'amount_to_pay_for_t2b' => 'required|numeric|min:0',
         ]);
 
+        $validated['updated_by'] = auth()->id();
         $t2bTripClient->update($validated);
-        return response()->json($t2bTripClient, 200);
+
+        return response()->json($t2bTripClient->load('temporaryClient', 't2bTrip', 'clientItems', 'paymentTransactions', 'payments'), 200);
     }
 
 
-    public function show($id)
+    public function show(T2bTripClient $t2bTripClient)
     {
-        return T2bTripClient::findOrFail($id);
+        return $t2bTripClient->load('temporaryClient', 't2bTrip', 'clientItems', 'paymentTransactions', 'payments');
     }
 
 
-    public function delete($id)
+    public function destroy(T2bTripClient $t2bTripClient)
     {
-        T2bTripClient::findOrFail($id)->delete();
+        $t2bTripClient->delete();
 
-        return response()->json(['message' => 'Client deleted successfully']);
+        return response()->json
+        ([
+            'message' => 'Client deleted successfully',
+            'client' => $t2bTripClient->load('temporaryClient', 't2bTrip', 'clientItems', 'paymentTransactions', 'payments'),
+        ]);
     }
 
 }

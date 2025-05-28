@@ -32,7 +32,7 @@ class T2bTripClient extends Model
     }
 
 
-    public function clientItem()
+    public function clientItems()
     {
         return $this->hasMany(T2bClientItem::class, 't2b_client_id');
     }
