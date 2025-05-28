@@ -9,44 +9,60 @@ use App\Http\Request;
 class T2bClientItemController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        return T2bClientItem::all();
+        $perPage = $request->query('per_page', 10);
+        $t2bClientItem = T2bClientItem::with('t2bClient', 't2bTrip')
+                    ->latest()
+                    ->paginate($perPage);
+
+        return response()->json($t2bClientItem);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate
         ([
-
+            't2b_client_id' => 'required|exists:t2b_trip_clients,id',
+            't2b_trip_id' => 'required|exists:t2b_trips,id',
+            'quantity' => 'required|numeric|min:0',
         ]);
 
+        $validated['created_by'] = auth()->id();
         $t2bClientItem = T2bClientItem::create($validated);
-        return response()->json($t2bClientItem, 201);
+        return response()->json($t2bClientItem->load('t2bClient', 't2bTrip'), 201);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, T2bClientItem $t2bClientItem)
     {
         $validated = $request->validate
         ([ 
-
+            't2b_client_id' => 'required|exists:t2b_trip_clients,id',
+            't2b_trip_id' => 'required|exists:t2b_trips,id',
+            'quantity' => 'required|numeric:min:0',   
         ]);
 
+        $validated['updated_by'] = auth()->id();
         $t2bClientItem->update($validated);
-        return response()->json($t2bClientItem, 200);
+
+        return response()->json($t2bClientItem->load('t2bClient', 't2bTrip'), 200);
     }
 
 
-    public function show($id)
+    public function show(T2bClientController $t2bClientItem)
     {
-        return T2bClientItem::findOrFail($id);
+        return $t2bClientItem->load('t2bClient', 't2bTrip');
     }
 
 
-    public function destroy($id)
+    public function destroy(T2bClientItem $t2bClientItem)
     {
-        T2bClientItem::findOrFail($id)->delete();
+        $t2bClientItem->delete();
 
-        return response()->json(['message' => 'Deleted successfully']);
+        return response()->json
+        ([
+            'message' => 'Deleted successfully',
+            'client' => $t2bClientItem->load('t2bClient', 't2bTrip'),
+        ]);
     }
 }
