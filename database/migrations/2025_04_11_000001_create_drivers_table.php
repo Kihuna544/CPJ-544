@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('phone');
             $table->string('license_number')->unique();
             $table->string('profile_photo')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
     }

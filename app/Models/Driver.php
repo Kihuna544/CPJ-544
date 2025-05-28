@@ -15,6 +15,8 @@ class Driver extends Model
         'phone',
         'license_number',
         'profile_photo',
+        'created_by',
+        'updated_by',
     ];
 
 

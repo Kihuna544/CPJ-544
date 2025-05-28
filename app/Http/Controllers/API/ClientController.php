@@ -8,9 +8,12 @@ use Illuminate\Http\Request;
 
 class ClientController extends Controller{
 
-    public function index()
+    public function index(Request $request)
     {
-        return Client::all();
+        $client = Client::with('trips', 't2bTrips', 'b2tTrips', 'specialTrips');
+
+        return response()->json($client);
+        
     }
 
     public function store(Request $request)
@@ -39,8 +42,10 @@ class ClientController extends Controller{
             $validated['profile_photo'] = $photoPath;
         }
 
+        $validated['created_by'] = auth()->id();
         $client = Client::create($validated);
-        return response()->json($client, 201);
+
+        return response()->json($client->load('b2tClients'), 201);
     }
 
 
@@ -83,21 +88,28 @@ class ClientController extends Controller{
             $validated['profile_photo'] = $photoPath;
         }
 
+        $validated['updated_by'] = auth()->id();
         $client->update($validated);
-        return response()->json($client, 200);
+
+        return response()->json($client->load('b2tClients'), 200);
     }
 
     
-    public function show($id)
+    public function show(Client $client)
     {
-        return Client::findOrFail($id);
+        return response()->json($client->load('trips', 't2bTrips', 'b2tTrips', 'specialTrips'));
     }
 
 
-    public function destroy($id)
+    public function destroy(Client $client)
     {
-        Client::findOrFail($id)->delete();
-        return response()->json(['message' => 'Client deleted']);
+        $client->delete();
+
+        return response()->json
+        ([
+            'message' => 'Client deleted',
+            'client' => $client->load('b2tClients')
+        ]);
 
     }
 }

@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class T2bClientItem extends Model
 {
-    protected $table = 't2b_trip_items';
+    protected $table = 't2b_trips_items';
     
     protected $fillable =
      [
         't2b_client_id',
         't2b_trip_id',
+        'item_name',
         'quantity',
         'created_by',
         'updated_by',

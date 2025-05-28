@@ -19,19 +19,23 @@ class T2bClientItemController extends Controller
         return response()->json($t2bClientItem);
     }
 
+    
     public function store(Request $request)
     {
         $validated = $request->validate
         ([
             't2b_client_id' => 'required|exists:t2b_trip_clients,id',
             't2b_trip_id' => 'required|exists:t2b_trips,id',
+            'item_name' => 'required|string|max:255',
             'quantity' => 'required|numeric|min:0',
         ]);
 
         $validated['created_by'] = auth()->id();
         $t2bClientItem = T2bClientItem::create($validated);
+
         return response()->json($t2bClientItem->load('t2bClient', 't2bTrip'), 201);
     }
+
 
     public function update(Request $request, T2bClientItem $t2bClientItem)
     {
@@ -39,6 +43,7 @@ class T2bClientItemController extends Controller
         ([ 
             't2b_client_id' => 'required|exists:t2b_trip_clients,id',
             't2b_trip_id' => 'required|exists:t2b_trips,id',
+            'item_name' => 'required|string|max:255',
             'quantity' => 'required|numeric:min:0',   
         ]);
 

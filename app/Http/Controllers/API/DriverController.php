@@ -8,16 +8,18 @@ use Illuminate\Http\Request;
 
 class DriverController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Driver::all();
+        $driver = Driver::with('trips', 't2bTrips', 'b2tTrips', 'specialTrips');
+
+        return response()->json($driver);
     }
 
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string',
+            'name' => 'required|string|max:255',
             'phone' => 'required|string|unique:drivers,phone',
             'license_number' => 'required|string|unique:drivers,license_number',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -38,9 +40,10 @@ class DriverController extends Controller
     if ($photoPath) {
         $validated['profile_photo'] = $photoPath;
     }
-
+        $validated['created_by'] = auth()->id();
         $driver = Driver::create($validated);
-        return response()->json($driver, 201);
+
+        return response()->json($driver->load('trips', 't2bTrips', 'b2tTrips', 'specialTrips'), 201);
     }
 
 
@@ -81,20 +84,27 @@ class DriverController extends Controller
             $validated['profile_photo'] = $photoPath;
         }
 
+        $validated['updated_by'] = auth()->id();
         $driver->update($validated);
-        return response()->json($driver, 200);
+
+        return response()->json($driver->load('trips', 't2bTrips', 'b2tTrips', 'specialTrips'), 200);
     }
 
     
-    public function show($id)
+    public function show(Driver $driver)
     {
-        return Driver::findOrFail($id);
+        return response()->json($driver->load('trips', 't2bTrips', 'b2tTrips', 'specialTrips'));
     }
 
 
-    public function destroy($id)
+    public function destroy(Driver $driver)
     {
-        Driver::findOrFail($id)->delete();
-        return response()->json(['message' => 'Driver deleted']);
+        $driver->delete();
+        
+        return response()->json
+        ([
+            'message' => 'Driver deleted',
+             'driver' => $driver->load('trips', 't2bTrips', 'b2tTrips', 'specialTrips')
+        ]);
     }
 }

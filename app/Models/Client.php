@@ -16,6 +16,8 @@ class Client extends Model
         'client_name',
         'phone',
         'profile_photo',
+        'created_by',
+        'updated_by',
     ];
 
 

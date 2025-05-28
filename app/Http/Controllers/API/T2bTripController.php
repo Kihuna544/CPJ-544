@@ -60,10 +60,11 @@ class T2bTripController extends Controller
     public function destroy(T2bTrip $t2bTrip) 
     {
         $t2bTrip->delete();
+        
         return response()->json
             ([
                 'message'=> 'Trip deleted successfully',
-                'trip' => $t2bTrip->load('driver', 't2bTripClients', 't2bClientItems'),
+                't2bTrip' => $t2bTrip->load('driver', 't2bTripClients', 't2bClientItems'),
             ]);
     }
 }

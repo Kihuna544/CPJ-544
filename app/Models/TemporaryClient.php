@@ -12,7 +12,9 @@ class TemporaryClient extends Model
 
     protected $fillable = [
         'client_name',
-        'phone'
+        'phone',
+        'created_by',
+        'updated_by'
     ];
 
     public function t2bCLients()
