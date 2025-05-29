@@ -8,7 +8,7 @@ return new class extends Migration
     public function up(): void
     {
 
-        Schema::create('expenses', function (Blueprint $table) {
+        Schema::create('trip_expenses', function (Blueprint $table) {
             $table->id();          
             $table->date('expense_date')->index(); 
             $table->foreignId('trip_id')->nullable()->constrained('trips')->onDelete('set null');
@@ -31,6 +31,18 @@ return new class extends Migration
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
+
+        Schema::create('off_duty_expenses', function (Blueprint $table)
+        {
+            $table->id();
+            $table->date('expense_date')->index();
+            $table->string('category');
+            $table->decimal('amount', 8, 2);
+            $table->text('notes')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+        }); 
+
     
     }
 
