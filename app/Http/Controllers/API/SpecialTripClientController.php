@@ -39,7 +39,7 @@ class SpecialTripClientController extends Controller
         $validated = $request->validate
         ([
             'special_trip_id' => 'required|exists:special_trips,id',
-            'client_id' => 'required|exists:temporary_clients',
+            'client_id' => 'required|exists:temporary_clients,id',
             'client_name' => 'required|string|max:255',
             'amount_to_pay_for_the_special_trip',   
         ]);
