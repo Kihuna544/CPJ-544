@@ -63,7 +63,11 @@ class B2tTripController extends Controller
     {
         $b2tTrip->delete();
 
-        return response()->json(['message' => 'Trip deleted successfully']);
+        return response()->json
+        ([
+            'message' => 'Trip deleted successfully',
+            'b2tTrip' => $b2tTrip->load('b2tTripClients', 'driver')
+        ]);
     }
 
 

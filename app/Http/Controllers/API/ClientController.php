@@ -10,8 +10,12 @@ class ClientController extends Controller{
 
     public function index(Request $request)
     {
-        $client = Client::with('trips', 't2bTrips', 'b2tTrips', 'specialTrips');
-
+        $perPage = $request->query('per_page', 10);
+        
+        $client = Client::with('b2tClients')
+                ->latest()
+                ->paginate($perPage);
+        
         return response()->json($client);
         
     }
@@ -55,7 +59,7 @@ class ClientController extends Controller{
 
         $validated = $request->validate
         ([
-            'clientt_name' => 'sometimes|required|string',
+            'client_name' => 'sometimes|required|string',
             'phone' => 'sometimes|required|string|unique:clients,phone,'. $id,
             'profile_photo' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:2048',
             'profile_photo_camera' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:2048',
@@ -97,7 +101,7 @@ class ClientController extends Controller{
     
     public function show(Client $client)
     {
-        return response()->json($client->load('trips', 't2bTrips', 'b2tTrips', 'specialTrips'));
+        return response()->json($client->load('b2tClients'));
     }
 
 
