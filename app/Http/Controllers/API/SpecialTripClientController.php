@@ -24,7 +24,7 @@ class SpecialTripClientController extends Controller
             'special_trip_id' => 'required|exists:special_trips,id',
             'client_id' => 'required|exists:temporary_clients',
             'client_name' => 'required|string|max:255',
-            'amount_to_pay_for_the_special_trip',   
+            'amount_to_pay_for_the_special_trip' => 'required|numeric|min:0',   
         ]);
 
         $validated['created_by'] = auth()->id();
@@ -41,7 +41,7 @@ class SpecialTripClientController extends Controller
             'special_trip_id' => 'required|exists:special_trips,id',
             'client_id' => 'required|exists:temporary_clients,id',
             'client_name' => 'required|string|max:255',
-            'amount_to_pay_for_the_special_trip',   
+            'amount_to_pay_for_the_special_trip' => 'required|numeric|min:0',   
         ]);
 
         $validated['updated_by'] = auth()->id();
