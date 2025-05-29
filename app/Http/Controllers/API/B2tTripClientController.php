@@ -16,7 +16,7 @@ class B2tTripClientController extends Controller
 
         $b2tTripClient = B2tTripClient::with('client', 'b2tTrip', 'payments', 'paymentTransactions')
                 ->latest()
-                ->paginated($perPage);
+                ->paginate($perPage);
 
         return response()->json($b2tTripClient);
     }

@@ -3,12 +3,11 @@
 namespace App\Http\Contollers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Models;
+use App\Models\OffDutyExpense;
 use Illuminate\Http\Request;
 
 class OffDutyExpenseController extends Controller
 {
-
     public function index(Request $request)
     {
         $perPage = $request->query('per_page', 10);

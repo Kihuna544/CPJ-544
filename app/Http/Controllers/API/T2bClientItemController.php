@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\T2bClientItem;
-use App\Http\Request;
+use Illuminate\Http\Request;
 
 class T2bClientItemController extends Controller
 {

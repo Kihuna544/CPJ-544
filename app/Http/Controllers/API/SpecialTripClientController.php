@@ -11,7 +11,9 @@ class SpecialTripClientController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->query('per_page', 10);
-        $specialTripClient = SpecialTripClient::with('client', 'specialTrip', 'specialTripClientItems', 'payments', 'paymentTransactions');
+        $specialTripClient = SpecialTripClient::with('client', 'specialTrip', 'specialTripClientItems', 'payments', 'paymentTransactions')
+                            ->latest()
+                            ->paginate($perPage);
 
         return response()->json($specialTripClient);
     }    

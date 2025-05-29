@@ -10,7 +10,10 @@ class DriverController extends Controller
 {
     public function index(Request $request)
     {
-        $driver = Driver::with('trips', 't2bTrips', 'b2tTrips', 'specialTrips');
+        $perPage = $request->query('per_page', 10);
+        $driver = Driver::with('trips', 't2bTrips', 'b2tTrips', 'specialTrips')
+                ->latest()
+                ->paginate($perPage);
 
         return response()->json($driver);
     }

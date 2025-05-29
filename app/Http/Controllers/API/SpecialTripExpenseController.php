@@ -3,22 +3,22 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\SpecailTripExpense;
+use App\Models\SpecialTripExpense;
 use Illuminate\Http\Request;
 
 
-class SpecailTripExpenseController extends Controller
+class SpecialTripExpenseController extends Controller
 {
 
     public function index(Request $request)
     {
         $perPage = $request->query('per_page', 10);
 
-        $specailTripExpense = SpecialTripExpense::with('specialTrip')
+        $specialTripExpense = SpecialTripExpense::with('specialTrip')
                             ->latest()
                             ->paginate($perPage);
 
-        return response()->json($specailTripExpense);
+        return response()->json($specialTripExpense);
     }
 
 
@@ -34,13 +34,13 @@ class SpecailTripExpenseController extends Controller
         ]);
 
         $validated['created_by'] = auth()->id();
-        $specailTripExpense = SpecialTripExpense::create($validated);
+        $specialTripExpense = SpecialTripExpense::create($validated);
 
-        return response()->json($specailTripExpense->load('specialTrip'), 201);
+        return response()->json($specialTripExpense->load('specialTrip'), 201);
     }
 
 
-    public function update(Request $request, SpecialTripExpense $specailTripExpense)
+    public function update(Request $request, SpecialTripExpense $specialTripExpense)
     {
         $validated = $request->validate
         ([
@@ -52,26 +52,26 @@ class SpecailTripExpenseController extends Controller
         ]);
 
         $validated['updated_by'] = auth()->id();
-        $specailTripExpense->create($validated);
+        $specialTripExpense->create($validated);
 
-        return response()->json($specailTripExpense->load('specialTrip'), 201);
+        return response()->json($specialTripExpense->load('specialTrip'), 201);
     }
 
 
-    public function show(SpecialTripExpense $specailTripExpense)
+    public function show(SpecialTripExpense $specialTripExpense)
     {
-        return response()->json($specailTripExpense->load('specialTrip'));
+        return response()->json($specialTripExpense->load('specialTrip'));
     }
 
 
-    public function destroy(SpecialTripExpense $specailTripExpense)
+    public function destroy(SpecialTripExpense $specialTripExpense)
     {
-        $specailTripExpense->delete();
+        $specialTripExpense->delete();
 
         return response()->json
         ([
             'message' => 'Expense deleted successfully',
-            'specialTripExpense' => $specailTripExpense->load('speacialTrip')
+            'specialTripExpense' => $specialTripExpense->load('speacialTrip')
         ]);
     }
 }

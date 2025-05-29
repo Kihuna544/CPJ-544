@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class SpecialTrip extends Model
 {
     //
-    protected $table = 'special_trips_table';
+    protected $table = 'special_trips';
 
     protected $fillable = [
         'driver_id',
