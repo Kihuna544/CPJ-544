@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\SpecialTripClient;
+use App\Models\TemporaryClient;
 use Illuminate\Http\Request;
 
 class SpecialTripClientController extends Controller
@@ -25,11 +26,14 @@ class SpecialTripClientController extends Controller
         ([
             'special_trip_id' => 'required|exists:special_trips,id',
             'client_id' => 'required|exists:temporary_clients',
-            'client_name' => 'required|string|max:255',
             'amount_to_pay_for_the_special_trip' => 'required|numeric|min:0',   
         ]);
 
+        $specialTripClient = SpecialTripClient::find($validated ['client_id']);
+        $validated['client_name'] = $specialTripClient->client_name;
         $validated['created_by'] = auth()->id();
+
+
         $specialTripClient = SpecialTripClient::create($validated);
 
         return response()->json($specialTripClient->load('client', 'specialTrip', 'specialTripClientItems', 'payments', 'paymentTransactions'), 201);
@@ -42,11 +46,14 @@ class SpecialTripClientController extends Controller
         ([
             'special_trip_id' => 'required|exists:special_trips,id',
             'client_id' => 'required|exists:temporary_clients,id',
-            'client_name' => 'required|string|max:255',
             'amount_to_pay_for_the_special_trip' => 'required|numeric|min:0',   
         ]);
 
+        $specialTripClient = TemporaryClient::find($validated ['client_id']);
+        $validated['client_name'] = $specialTripClient->client_name;
         $validated['updated_by'] = auth()->id();
+
+        
         $specialTripClient->update($validated);
 
         return response()->json($specialTripClient->load('client', 'specialTrip', 'specialTripClientItems', 'payments', 'paymentTransactions'), 200);

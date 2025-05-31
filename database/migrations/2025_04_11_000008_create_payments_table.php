@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('b2t_trip_client_id')->nullable()->constrained('b2t_trip_clients')->onDelete('set null');
             $table->foreignId('special_trip_client_id')->nullable()->constrained('special_trip_clients')->onDelete('set null');
                     
-            $table->string('client_name'); //filled in automatically from the clients table
+            $table->string('client_name'); 
             $table->decimal('amount_to_pay_for_the_special_trip', 8, 2)->default(0.00);
             $table->decimal('amount_to_pay_for_b2t', 8, 2)->default(0.00);
             $table->decimal('amount_to_pay_for_t2b', 8, 2)->default(0.00);

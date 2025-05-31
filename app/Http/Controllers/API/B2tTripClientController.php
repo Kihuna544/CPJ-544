@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\B2tTripClient;
+use App\Models\Client;
 use Illuminate\Http\Request;
 
 class B2tTripClientController extends Controller
@@ -27,14 +28,16 @@ class B2tTripClientController extends Controller
         ([
             'b2t_trip_id' => 'required|exists:b2t_trips, id',
             'client_id' => 'required|exists:clients, id',
-            'client_name' => 'required|string|max:255', // should not have an input field in the front-end
             'no_of_sacks_per_client' => 'required|integer|min:0',
             'no_of_packages_per_client' => 'nullable|integer|min:0',
-            'amount_to_pay_for_b2t' => 'required|numeric|min:0',
+            'amount_to_pay_for_b2t' => 'require d|numeric|min:0',
         ]);
 
+        $b2tclient = Client::find($validated ['client_id']);
+        $validated['client_name'] = $b2tclient->client_name;
         $validated['created_by'] = auth()->id();
-        $b2tTripClient = B2tTripClient::where('client', 'b2tTrip', 'payments', 'paymentTransactions');
+        
+        $b2tTripClient = B2tTripClient::create($validated);
 
         return response()->json($b2tTripClient->load('client', 'b2tTrip', 'payments', 'paymentTransactions'), 201);
     }
@@ -44,16 +47,19 @@ class B2tTripClientController extends Controller
     {
         $validated = $request->validate
         ([
-            'b2t_trip_id' => 'required|exists:b2t_trips, id', //'b2t_trip_id' => 'sometimes|required|exists:b2t_trips, id'---------> has the word sometimes before required
-            'client_id' => 'required|exists:clients, id',
-            'client_name' => 'required|string|max:255',
-            'no_of_sacks_per_client' => 'required|integer|min:0',
+            'b2t_trip_id' => 'sometimes|required|exists:b2t_trips, id', 
+            'client_id' => 'sometimes|required|exists:clients, id',
+            'no_of_sacks_per_client' => 'sometimes|required|integer|min:0',
             'no_of_packages_per_client' => 'nullable|integer|min:0',
-            'amount_to_pay_for_b2t' => 'required|numeric|min:0',  
+            'amount_to_pay_for_b2t' => 'sometimes|required|numeric|min:0',  
         ]);
 
+        $b2tclient = Client::find($validated ['client_id']);
+        $validated['client_name'] = $b2tclient->client_name;
         $validated['updated_by'] = auth()->id();
-        $b2tTripClient->upgrade($validated);
+
+
+        $b2tTripClient->update($validated);
 
         return response()->json($b2tTripClient->load('client', 'b2tTrip', 'payments', 'paymentTransactions'), 200);
     }

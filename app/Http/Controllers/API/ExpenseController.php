@@ -43,10 +43,10 @@ class ExpenseController extends Controller
     {
         $validated = $request->validate
         ([
-            'expense_date' => 'required|date',
-            'trip_id' => 'required|exists:trips,id',
-            'category' => 'required|string|max:255',
-            'amount' => 'required|numeric|min:0',
+            'expense_date' => 'sometimes|required|date',
+            'trip_id' => 'sometimes|required|exists:trips,id',
+            'category' => 'sometimes|required|string|max:255',
+            'amount' => 'sometimes|required|numeric|min:0',
             'notes' => '' // should be validated
         ]);
 

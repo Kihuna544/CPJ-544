@@ -40,8 +40,8 @@ class B2tTripController extends Controller
     public function update(Request $request, B2tTrip $b2tTrip) 
     {
         $validated = $request->validate([
-            'driver_id' => 'required|exists:drivers,id',
-            'trip_date' => 'required|date',
+            'driver_id' => 'sometimes|required|exists:drivers,id',
+            'trip_date' => 'sometimes|required|date',
             'total_number_of_sacks' => 'nullable|integer|min:0', 
             'total_number_of_packages' => 'nullable|integer|min:0', 
         ]);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\T2bTripClient;
+use App\Models\TemporaryClient;
 use Illuminate\Http\Request;
 
 class T2bTripClientController extends Controller
@@ -16,7 +17,7 @@ class T2bTripClientController extends Controller
                 ->latest()
                 ->paginate($perPage);
 
-                return response()->json($t2bTripClient);
+        return response()->json($t2bTripClient);
     }
 
 
@@ -26,11 +27,14 @@ class T2bTripClientController extends Controller
         ([
             't2b_trip_id' => 'required|exists:t2b_trips,id',
             'client_id' => 'required|exists:temporary_clients,id',
-            'client_name' => 'required|string|max:255',
             'amount_to_pay_for_t2b' => 'required|numeric|min:0',
         ]);
 
+        $t2bClient = TemporaryClient::find($validated ['client_id']);
+        $validated['client_name'] = $t2bClient->client_name;
         $validated['created_by'] = auth()->id();
+
+
         $t2bTripClient = T2bTripClient::create($validated);
 
         return response()->json($t2bTripClient->load('temporaryClient', 't2bTrip', 'clientItems', 'paymentTransactions', 'payments'), 201);
@@ -43,11 +47,15 @@ class T2bTripClientController extends Controller
         ([
             't2b_trip_id' => 'required|exists:t2b_trips,id',
             'client_id' => 'required|exists:temporary_clients,id',
-            'client_name' => 'required|string|max:255',
             'amount_to_pay_for_t2b' => 'required|numeric|min:0',
         ]);
 
+
+        $t2bClient = TemporaryClient::find($validated ['client_id']);
+        $validated['client_name'] = $t2bClient->client_name;
         $validated['updated_by'] = auth()->id();
+
+
         $t2bTripClient->update($validated);
 
         return response()->json($t2bTripClient->load('temporaryClient', 't2bTrip', 'clientItems', 'paymentTransactions', 'payments'), 200);
