@@ -29,7 +29,7 @@ class ExpenseController extends Controller
             'trip_id' => 'required|exists:trips,id',
             'category' => 'required|string|max:255',
             'amount' => 'required|numeric|min:0',
-            'notes' => '' // should be validated
+            'notes' => 'required|string|max:10000'
         ]);
 
         $validated['created_by'] = auth()->id();
@@ -47,7 +47,7 @@ class ExpenseController extends Controller
             'trip_id' => 'sometimes|required|exists:trips,id',
             'category' => 'sometimes|required|string|max:255',
             'amount' => 'sometimes|required|numeric|min:0',
-            'notes' => '' // should be validated
+            'notes' => 'sometimes|required|string|max:10000'
         ]);
 
         $validated['updated_by'] = auth()->id();

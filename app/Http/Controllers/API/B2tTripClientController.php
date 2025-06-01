@@ -73,12 +73,19 @@ class B2tTripClientController extends Controller
 
     public function destroy(B2tTripClient $b2tTripClient)
     {
+        $b2tclient->load('client', 'b2tTrip', 'payments', 'paymentTransactions');
+
+        $b2tclient->deleted_by = auth()->id();
+        $b2tclient->save();
+
+        $deletedClient = $b2tclient;
+
         $b2tTripClient->delete();
 
         return response()->json
             ([
                 'message' => 'Client deleted successfully',
-                'client' => $b2tTripClient->load('client', 'b2tTrip', 'payments', 'paymentTransactions'),
+                'deletedTrip' => $deletedClient
             ]);
     }
 }

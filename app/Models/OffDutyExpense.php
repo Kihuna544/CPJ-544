@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Eloquent\Database\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class OffDutyExpense extends Model
 {

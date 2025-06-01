@@ -48,6 +48,7 @@ return new class extends Migration
 
     public function down(): void
     {
+        Schema::dropIfExists('off_duty_expenses');
         Schema::dropIfExists('special_trip_expenses');
         Schema::dropIfExists('expenses');
     }

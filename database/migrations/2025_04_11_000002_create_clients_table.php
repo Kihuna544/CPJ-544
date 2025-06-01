@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('phone')->index();
             $table->string('profile_photo')->nullable(); // Profile photo URL
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreigId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('client_name');
             $table->string('phone')->index();
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreigId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
     }

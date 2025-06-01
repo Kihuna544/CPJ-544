@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-namespace App\Http\Contollers\API;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\OffDutyExpense;
@@ -8,14 +8,13 @@ use Illuminate\Http\Request;
 
 class OffDutyExpenseController extends Controller
 {
+
     public function index(Request $request)
     {
-        $perPage = $request->query('per_page', 10);
-
-        $offDutyExpense = OffDutyExpense::class
-                        ->OrderbyDesc('expense_date')
-                        ->paginate($perPage);
-
+        $offDutyExpense = OffDutyExpense::with('/')
+                        ->OrderByDesc('expense_date')
+                        ->paginate(10);
+                    
         return response()->json($offDutyExpense);
     }
 
@@ -25,14 +24,13 @@ class OffDutyExpenseController extends Controller
         $validated = $request->validate
         ([
             'expense_date' => 'required|date',
-            'category' => 'required|string|max:255',
+            'category' => 'required|string|max:100',
             'amount' => 'required|numeric|min:0',
-            'notes' => '', // should be validated
+            'notes' => 'required|string|max:10000',
         ]);
 
         $validated['created_by'] = auth()->id();
         $offDutyExpense = OffDutyExpense::create($validated);
-
 
         return response()->json($offDutyExpense);
     }
@@ -42,33 +40,32 @@ class OffDutyExpenseController extends Controller
     {
         $validated = $request->validate
         ([
-            'expense_date' => 'required|date',
-            'category' => 'required|string|max:255',
-            'amount' => 'required|numeric|min:0',
-            'notes' => '', // should be validated
+            'expense_date' => 'sometimes|required|date',
+            'category' => 'sometimes|required|string|max:100',
+            'amount' => 'sometimes|required|numeric|mi:0',
+            'notes' => 'sometimes|required|string|max:10000'
         ]);
 
         $validated['updated_by'] = auth()->id();
-        $offDutyExpense->create($validated);
-
+        $offDutyExpense->update($validated);
 
         return response()->json($offDutyExpense);
     }
 
 
-    public function show(OffDutyExpense $offDutyExpense)
+    public function show(Request $request)
     {
         return response()->json($offDutyExpense);
     }
 
 
-    public function destroy(OffDutyExpense $offDutyExpense)
+    public function destroy(Request $request)
     {
-        $offDutyExpense->delete();
+        $offDutyExpense->unlink;
 
         return response()->json
         ([
-            'message' => 'Expense deleted successfully',
+            'message' => 'Expense deleted',
             'offDutyExpense' => $offDutyExpense
         ]);
     }

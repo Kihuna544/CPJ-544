@@ -107,7 +107,7 @@ class DriverController extends Controller
         return response()->json
         ([
             'message' => 'Driver deleted',
-             'driver' => $driver->load('trips', 't2bTrips', 'b2tTrips', 'specialTrips')
+            'driver' => $driver->load('trips', 't2bTrips', 'b2tTrips', 'specialTrips')
         ]);
     }
 }

@@ -26,12 +26,12 @@ class B2tTripController extends Controller
         $validated = $request->validate([
             'driver_id' => 'required|exists:drivers,id',
             'trip_date' => 'required|date',
-            'total_number_of_sacks' => 'nullabel|integer|min:0',
-            'total_number_of_packages' => 'nullable|integer|min:0', 
+         
         ]);
 
         $validated['created_by'] = auth()->id();
         $b2tTrip = B2tTrip::create($validated);
+        $b2tTrip->refreshTotals();
 
         return response()->json($b2tTrip->load('b2tTripClients', 'driver'), 201);
     }
@@ -42,12 +42,11 @@ class B2tTripController extends Controller
         $validated = $request->validate([
             'driver_id' => 'sometimes|required|exists:drivers,id',
             'trip_date' => 'sometimes|required|date',
-            'total_number_of_sacks' => 'nullable|integer|min:0', 
-            'total_number_of_packages' => 'nullable|integer|min:0', 
         ]);
-
+     
         $validated['updated_by'] = auth()->id();
         $b2tTrip->update($validated);
+        $b2tTrip->refreshTotals();
 
         return response()->json($b2tTrip->load('b2tTripClients', 'driver'), 200);
     }
@@ -61,29 +60,44 @@ class B2tTripController extends Controller
 
     public function destroy(B2tTrip $b2tTrip)
     {
+        $b2tTrip->load('b2tTripClients', 'driver');
+
+        $b2tTrip->deleted_by = auth()->id();
+        $b2tTrip->save();
+
+
+        $deletedTrip = $b2tTrip;
+
         $b2tTrip->delete();
 
         return response()->json
         ([
+
             'message' => 'Trip deleted successfully',
-            'b2tTrip' => $b2tTrip->load('b2tTripClients', 'driver')
+            'deleted_trip' => $deletedTrip
         ]);
     }
 
-
-    public function refreshTotals(B2tTrip $b2tTrip)
+    
+    public function trashed()
     {
-        $b2tTrip->update
-        ([
-            'total_number_of_sacks' => $b2tTrip->b2tTripClients()->sum('no_of_sacks_per_client'),
-            'total_number_of_packages' => $b2tTrip->b2tTripClients()->sum('no_of_packages_per_client'),
-        ]);
+        $trashedTrip = B2tTrip::onlyTrashed()
+                    ->with('b2tTripClients', 'driver')
+                    ->get();
 
+        return response()->json($trashedTrip);
+    }
+
+
+    public function restore($id)
+    {
+        $trashedTrip = B2tTrip::onlyTrashed()->findOrFail($id);
+        $trashedTrip->restore();
 
         return response()->json
         ([
-            'message' => 'Total updated successfully',
-            'trip' => $b2tTrip->load('b2tTripClients', 'driver'),
+            'message' => 'Trip was restored successfully'
         ]);
     }
-}
+
+ }
