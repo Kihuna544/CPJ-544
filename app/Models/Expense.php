@@ -3,10 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factory\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Expense extends Model
 {
-    protected $table = 'expenses';
+    //
+    use SoftDeletes;
+
+    protected $table = 'trip_expenses';
 
     protected $fillable = 
     [
@@ -16,12 +21,13 @@ class Expense extends Model
         'amount',
         'notes',
         'created_by',
+        'deleted_by',
         'updated_by'
     ];
 
 
     public function trip()
     {
-        return $this->hasMany(Trips::class, 'trip_id');
+        return $this->belongsTo(Trips::class, 'trip_id');
     }
 }

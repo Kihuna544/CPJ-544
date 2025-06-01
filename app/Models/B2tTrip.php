@@ -10,7 +10,6 @@ class B2tTrip extends Model
     //
     use SoftDeletes;
 
-
     protected $table = 'b2t_trips_table';
     
     protected $fillable = [
