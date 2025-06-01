@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
 class B2tTripClient extends Model
@@ -20,6 +22,7 @@ class B2tTripClient extends Model
         'no_of_packages_per_client',
         'amount_to_pay_for_b2t',
         'created_by',
+        'deleted_by',
         'updated_by',
     ];
 

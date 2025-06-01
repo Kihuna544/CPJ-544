@@ -101,7 +101,7 @@ class B2tTripController extends Controller
         return response()->json
         ([
             'message' => 'Trip was restored successfully',
-            'trashed_trip' => $trashedTrip
+            'trashed_trip' => $trashedTrip->load('b2tTripClient', 'driver')
         ], 200);
     }
 

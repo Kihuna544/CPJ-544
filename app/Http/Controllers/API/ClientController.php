@@ -146,7 +146,7 @@ class ClientController extends Controller{
         return response()->json
         ([
             'message' => 'Client restored Successfully',
-            'trashedClient' => $trashedClient
+            'trashedClient' => $trashedClient->load('b2tClients')
         ], 200);
     }
 }

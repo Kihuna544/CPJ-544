@@ -60,7 +60,7 @@ class B2tTripClientController extends Controller
 
         if(isset($validated['client_id']))
         {
-            $b2tClient = Cliet::find($validated['client_id']);
+            $b2tClient = Client::find($validated['client_id']);
             $validated['client_name'] = $b2tClient->client_name ?? 'Unkonwn Client';
         }
 
@@ -119,7 +119,8 @@ class B2tTripClientController extends Controller
 
         return response()->json
         ([
-            'message' => 'Client restored successfully'
+            'message' => 'Client restored successfully',
+            'trashedClient' => $trashedClient->load('client', 'b2tTrip', 'payments', 'paymentTransactions')
         ], 200);
     }
 }

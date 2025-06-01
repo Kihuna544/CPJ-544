@@ -62,6 +62,8 @@ class DriverController extends Controller
             'profile_photo_camera' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:2048',
         ]);
 
+        $photoPath = null;
+
         if ($request->hasFile('profile_photo'))
         {
             if($driver->profile_photo)
@@ -90,7 +92,11 @@ class DriverController extends Controller
         $validated['updated_by'] = auth()->id();
         $driver->update($validated);
 
-        return response()->json($driver->load('trips', 't2bTrips', 'b2tTrips', 'specialTrips'), 200);
+        return response()->json
+        ([
+            'message' => 'Driver updated successfully',
+            'driver' =>$driver->load('trips', 't2bTrips', 'b2tTrips', 'specialTrips')
+        ], 200);
     }
 
     
@@ -102,12 +108,42 @@ class DriverController extends Controller
 
     public function destroy(Driver $driver)
     {
+        $driver->load('trips', 't2bTrips', 'b2tTrips', 'specialTrips');
+
+        $driver->deleted_by = auth()->id();
+        $driver->save();
+
+        $deletedDriver = $driver;
+
         $driver->delete();
         
         return response()->json
         ([
             'message' => 'Driver deleted',
-            'driver' => $driver->load('trips', 't2bTrips', 'b2tTrips', 'specialTrips')
+            'deletedDriver' => $deletedDriver
+        ]);
+    }
+
+
+    public function trashed()
+    {
+        $trashedDriver = Driver::onlyTrashed()
+                    ->with('trips', 't2bTrips', 'b2tTrips', 'specialTrips')
+                    ->get();
+
+        return response()->json($trashedDriver);
+    }
+
+
+    public function restore($id)
+    {
+        $trashedDriver = Driver::onlyTrashed()->findOrFail($id);
+        $trashedDriver->restore();
+        
+        return response()->json
+        ([
+            'message' => 'Driver restored successfully',
+            'trashedDriver' => $trashedDriver->load('trips', 't2bTrips', 'b2tTrips', 'specialTrips')
         ]);
     }
 }
