@@ -69,7 +69,11 @@ class B2tTripClientController extends Controller
 
         $b2tTripClient->update($validated);
 
-        return response()->json($b2tTripClient->load('client', 'b2tTrip', 'payments', 'paymentTransactions'), 200);
+        return response()->json
+        ([
+            'message' => 'Client updated successfully',
+            'b2tTripClient' => $b2tTripClient->load('client', 'b2tTrip', 'payments', 'paymentTransactions'
+        )], 200);
     }
 
 

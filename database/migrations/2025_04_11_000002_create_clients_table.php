@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+
     public function up(): void
     {
         //b2t clients mostly permanet ones.
@@ -19,6 +17,7 @@ return new class extends Migration
             $table->string('profile_photo')->nullable(); // Profile photo URL
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
             $table->softDeletes();
             $table->timestamps();
         });

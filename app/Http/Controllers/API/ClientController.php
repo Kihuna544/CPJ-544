@@ -79,7 +79,7 @@ class ClientController extends Controller{
 
         elseif($request->hasFile('profile_photo_camera'))
         {
-            if($client->profile_photo_camera)
+            if($client->profile_photo)
             {
                 \Storage::disk('public')->delete($client->profile_photo);
             }
@@ -95,7 +95,11 @@ class ClientController extends Controller{
         $validated['updated_by'] = auth()->id();
         $client->update($validated);
 
-        return response()->json($client->load('b2tClients'), 200);
+        return response()->json
+        ([
+            'message' => 'Client updated successfully',
+            'client' => $client->load('b2tClients'
+        )], 200);
     }
 
     
@@ -107,13 +111,42 @@ class ClientController extends Controller{
 
     public function destroy(Client $client)
     {
+        $client->load('b2tClients');
+
+        $client->deleted_by = auth()->id();
+        $client->save();
+
+        $deletedClient = $client;
+
         $client->delete();
 
         return response()->json
         ([
             'message' => 'Client deleted',
-            'client' => $client->load('b2tClients')
+            'deletedClient' => $deletedClient
         ]);
 
+    }
+
+
+    public function trashed()
+    {
+        $trashedClient = Client::onlyTrashed()
+                        ->with('b2tClients')
+                        ->get();
+        return response()->json($trashedClient);
+    }
+
+
+    public function restore($id)
+    {
+        $trashedClient = Client::onlyTrashed()->findOrFail($id);
+        $trashedClient->restore();
+
+        return response()->json
+        ([
+            'message' => 'Client restored Successfully',
+            'trashedClient' => $trashedClient
+        ], 200);
     }
 }

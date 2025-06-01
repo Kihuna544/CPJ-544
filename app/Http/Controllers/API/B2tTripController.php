@@ -48,7 +48,11 @@ class B2tTripController extends Controller
         $b2tTrip->update($validated);
         $b2tTrip->refreshTotals();
 
-        return response()->json($b2tTrip->load('b2tTripClients', 'driver'), 200);
+        return response()->json
+        ([
+            'message' => 'Trip updatesd successfully',
+            'b2tTrip' => $b2tTrip->load('b2tTripClients', 'driver'
+        )], 200);
     }
 
 
@@ -98,7 +102,7 @@ class B2tTripController extends Controller
         ([
             'message' => 'Trip was restored successfully',
             'trashed_trip' => $trashedTrip
-        ]);
+        ], 200);
     }
 
  }
