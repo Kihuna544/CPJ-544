@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class B2tTripClient extends Model
 {
     //
+
+    use SoftDeletes;
+
     protected $table = 'b2t_trip_clients';
 
     protected $fillable= [
@@ -22,21 +25,21 @@ class B2tTripClient extends Model
 
     public function client()
     {
-        return $this->belongsToMany(Client::class, 'b2t_trip_clients');
+        return $this->belongsTo(Client::class, 'client_id');
     }
 
     public function b2tTrip()
     {
-        return $this->belongsTo(B2tTrip::class);
+        return $this->belongsTo(B2tTrip::class, 'b2t_trip_id');
     }
 
     public function payments()
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(Payment::class, 'b2t_trip_client_id');
     }
 
     public function paymentTransactions()
     {
-        return $this->hasMany(PaymentTransaction::class);
+        return $this->hasMany(PaymentTransaction::class, 'b2t_client_payment_id');
     }
 }

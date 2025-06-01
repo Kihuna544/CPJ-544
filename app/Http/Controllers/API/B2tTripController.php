@@ -96,7 +96,8 @@ class B2tTripController extends Controller
 
         return response()->json
         ([
-            'message' => 'Trip was restored successfully'
+            'message' => 'Trip was restored successfully',
+            'trashed_trip' => $trashedTrip
         ]);
     }
 

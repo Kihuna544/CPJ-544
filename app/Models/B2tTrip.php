@@ -34,7 +34,7 @@ class B2tTrip extends Model
     }
 
     
-    public function refreshTotal()
+    public function refreshTotals()
     {
         $this->update
         ([
