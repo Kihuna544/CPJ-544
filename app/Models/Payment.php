@@ -3,10 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use illuminate\Database\Eloquent\SoftDeletes;
 
 class Payment extends Model
 {
     //
+
+    use SoftDeletes;
+
     protected $table = 'payments';
 
     protected $fillable =[
@@ -22,6 +27,7 @@ class Payment extends Model
         'status',
         'notes',
         'created_by',
+        'deleted_by',
         'updated_by',
     ];
 
