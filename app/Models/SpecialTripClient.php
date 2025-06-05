@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SpecialTripClient extends Model
 {
     //
+    use SoftDeletes;
+
     protected $table = 'special_trip_clients';
 
     protected $fillable = [
@@ -15,6 +18,7 @@ class SpecialTripClient extends Model
         'client_name',
         'amount_to_pay_for_the_special_trip',
         'created_by',
+        'deleted_by',
         'updated_by',
     ];
 

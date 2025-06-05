@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SpecialTripClientItem extends Model
 {
     //
+    use SoftDeletes;
+
     protected $table = 'special_trip_items';
 
     protected $fillable =  [
@@ -15,6 +18,7 @@ class SpecialTripClientItem extends Model
         'item_name',
         'quantity',
         'created_by',
+        'deleted_by',
         'updated_by',
     ];
 

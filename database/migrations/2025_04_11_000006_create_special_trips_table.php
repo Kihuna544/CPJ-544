@@ -17,7 +17,9 @@ return new class extends Migration
             $table->string('trip_status')->default('pending');
 
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->softDeletes();
             $table->timestamps();
         });
 
@@ -28,7 +30,9 @@ return new class extends Migration
             $table->string('client_name'); // filled in here directly from the client table.
             $table->decimal('amount_to_pay_for_the_special_trip', 8, 2);
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->softDeletes();
             $table->timestamps();
         });
 
@@ -39,7 +43,9 @@ return new class extends Migration
             $table->string('item_name');
             $table->unsignedInteger('quantity');
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
