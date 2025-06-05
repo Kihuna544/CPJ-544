@@ -3,25 +3,28 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\ELoquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
 class T2bTrip extends Model
 {
     //
+    use SofDeletes;
+
     protected $table = 't2b_trips_table';
 
     protected $fillable = [
-        'driver_id',
-        'trip_date',
-        'created_by',    
+        'normal_trip_id',
+        'created_by', 
+        'deleted_by',   
         'updated_by',
 
     ];
 
 
-    public function driver()
+    public function trip()
     {
-        return $this->belongsTo(Driver::class);
+        return $this->belongsTo(NormalItenkaTrip::class, 'normal_trip_id');
     }
 
     public function t2bTripClients()

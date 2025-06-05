@@ -17,7 +17,11 @@ class ExpenseController extends Controller
                 ->latest()
                 ->paginate($perPage);
 
-    return response()->json($expense);
+    return response()->json
+    ([
+        'message' => 'success',
+        'expense' => $expense
+    ]);
     }
 
 
@@ -35,7 +39,11 @@ class ExpenseController extends Controller
         $validated['created_by'] = auth()->id();
         $expense = Expense::create($validated);
 
-        return response()->json($expense->load('trip'), 201);
+        return response()->json
+        ([
+            'message' => 'Expense created successfully',
+            'expense' => $expense->load('trip')
+        ], 201);
     }
 
 
@@ -63,7 +71,11 @@ class ExpenseController extends Controller
 
     public function show(Expense $expense)
     {
-        return response()->json($expense->load('trip'));
+        return response()->json
+        ([
+            'message' => 'success',
+            'expense' => $expense->load('trip')
+        ]);
     }
 
 
@@ -92,7 +104,11 @@ class ExpenseController extends Controller
                         ->with('trip')
                         ->get();
         
-        return response()->json($trashedExpense);
+        return response()->json
+        ([
+            'message' => 'success',
+            'trashedExpense' => $trashedExpense
+        ]);
     }
 
 

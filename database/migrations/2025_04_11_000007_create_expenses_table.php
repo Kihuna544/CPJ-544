@@ -8,20 +8,24 @@ return new class extends Migration
     public function up(): void
     {
 
-        Schema::create('trip_expenses', function (Blueprint $table) {
+        Schema::create('trip_expenses', function (Blueprint $table) 
+        {
             $table->id();          
             $table->date('expense_date')->index(); 
-            $table->foreignId('trip_id')->nullable()->constrained('trips')->onDelete('set null');
+            $table->foreignId('trip_id')->nullable()->constrained('normal_itenka_trips')->onDelete('set null');
             $table->string('category'); // e.g. fuel, maintenance, food, parking
             $table->decimal('amount', 8, 2);
             $table->text('notes')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->softDeletes();
             $table->timestamps();
         });
 
-        Schema::create('special_trip_expenses', function (Blueprint $table) {
+        
+        Schema::create('special_trip_expenses', function (Blueprint $table) 
+        {
             $table->id();          
             $table->date('expense_date')->index(); 
             $table->foreignId('special_trip_id')->nullable()->constrained('special_trips')->onDelete('set null');
@@ -34,6 +38,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
         });
+
 
         Schema::create('off_duty_expenses', function (Blueprint $table)
         {

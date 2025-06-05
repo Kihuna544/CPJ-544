@@ -16,7 +16,11 @@ class ClientController extends Controller{
                 ->latest()
                 ->paginate($perPage);
         
-        return response()->json($client);
+        return response()->json
+        ([
+            'message' => 'success',
+            'client' => $client
+        ]);
         
     }
 
@@ -49,7 +53,11 @@ class ClientController extends Controller{
         $validated['created_by'] = auth()->id();
         $client = Client::create($validated);
 
-        return response()->json($client->load('b2tClients'), 201);
+        return response()->json
+        ([
+            'message' => 'Client created successfully',
+            'client' => $client->load('b2tClients')
+        ], 201);
     }
 
 
@@ -105,7 +113,11 @@ class ClientController extends Controller{
     
     public function show(Client $client)
     {
-        return response()->json($client->load('b2tClients'));
+        return response()->json
+        ([
+            'message' => 'success',
+            'client' => $client->load('b2tClients')
+        ]);
     }
 
 
@@ -134,7 +146,11 @@ class ClientController extends Controller{
         $trashedClient = Client::onlyTrashed()
                         ->with('b2tClients')
                         ->get();
-        return response()->json($trashedClient);
+        return response()->json
+        ([
+            'message' => 'success',
+            'trashedClient' => $trashedClient
+        ]);
     }
 
 

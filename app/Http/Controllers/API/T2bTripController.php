@@ -13,8 +13,8 @@ class T2bTripController extends Controller
     {
         $perPage = $request->query('per_page', 10);
 
-        $t2bTrip = T2bTrip::with(['driver', 't2bTripClients', 't2bClientItems'])
-                    ->orderByDesc('trip_date')
+        $t2bTrip = T2bTrip::with(['trip', 't2bTripClients', 't2bClientItems'])
+                    ->latest()
                     ->paginate($perPage);
 
         return response()->json($t2bTrip);
@@ -25,14 +25,13 @@ class T2bTripController extends Controller
     {
         $validated = $request->validate
         ([
-            'driver_id' => 'required|exists:drivers,id',
-            'trip_date' => 'required|date',
+            'normal_trip_id' => 'required|exists:normal_itenka_trips,id',
         ]);
 
         $validated['created_by'] = auth()->id();
         $t2bTrip = T2bTrip::create($validated);
 
-        return response()->json($t2bTrip->load('driver', 't2bTripClients', 't2bClientItems'), 201);
+        return response()->json($t2bTrip->load('trip', 't2bTripClients', 't2bClientItems'), 201);
     }
 
 
@@ -40,31 +39,60 @@ class T2bTripController extends Controller
     {
         $validated = $request->validate
         ([
-            'driver_id' => 'required|exists:drivers,id',
-            'trip_date' => 'required|date',
+            'normal_trip_id' => 'required|exists:normal_itenka_trips,id',
         ]);
 
         $validated['updated_by'] = auth()->id();
         $t2bTrip->update($validated);
 
-        return response()->json($t2bTrip->load('driver', 't2bTripClients', 't2bClientItems'), 200);
+        return response()->json($t2bTrip->load('trip', 't2bTripClients', 't2bClientItems'), 200);
     }
 
 
     public function show(T2bTrip $t2bTrip)
     {
-        return response()->json($t2bTrip->load('driver', 't2bTripClients', 't2bClientItems'));
+        return response()->json($t2bTrip->load('trip', 't2bTripClients', 't2bClientItems'));
     }
 
 
     public function destroy(T2bTrip $t2bTrip) 
     {
+        $t2bTrip->load('trip', 't2bTripClients', 't2bClientItems');
+
+        $t2bTrip->deleted_by = auth()->id();
+        $t2bTrip->save();
+
+        $deletedTrip = $t2bTrip;
+
         $t2bTrip->delete();
         
         return response()->json
             ([
                 'message'=> 'Trip deleted successfully',
-                't2bTrip' => $t2bTrip->load('driver', 't2bTripClients', 't2bClientItems'),
+                't2bTrip' => $deletedTrip
             ]);
+    }
+
+
+    public function trashed()
+    {
+        $trashedTrip = B2tTrip::onlyTrashed()
+                     ->with('trip', 't2bTripClients', 't2bClientItems')
+                     ->get();
+        
+        return response()->json($trashedTrip);
+    }
+
+
+    public function restore($id)
+    {
+        $trashedTrip = B2tTrip::onlyTrashed()->findOrFail($id);
+        $trashedTrip->restore();
+
+        return response()->json
+        ([
+            'message' => 'Trip restored successfully',
+            'trashedTrip' => $trashedTrip
+        ], 200);
     }
 }

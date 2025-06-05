@@ -19,7 +19,11 @@ class B2tTripClientController extends Controller
                 ->latest()
                 ->paginate($perPage);
 
-        return response()->json($b2tTripClient);
+        return response()->json
+        ([
+            'message' => 'success',
+            'b2tTripClient' => $b2tTripClient
+        ]);
     }
 
     public function store(Request $request)
@@ -43,7 +47,11 @@ class B2tTripClientController extends Controller
         
         $b2tTripClient = B2tTripClient::create($validated);
 
-        return response()->json($b2tTripClient->load('client', 'b2tTrip', 'payments', 'paymentTransactions'), 201);
+        return response()->json
+        ([
+            'message' => 'Client created successfully',
+            'b2tTripClient' => $b2tTripClient->load('client', 'b2tTrip', 'payments', 'paymentTransactions')
+        ], 201);
     }
 
 
@@ -79,7 +87,11 @@ class B2tTripClientController extends Controller
 
     public function show(B2tTripClient $b2tTripClient)
     {
-        return response()->json($b2tTripClient->load('client', 'b2tTrip', 'payments', 'paymentTransactions'));
+        return response()->json
+        ([
+            'message' => 'success',
+            'b2tTripClient' => $b2tTripClient->load('client', 'b2tTrip', 'payments', 'paymentTransactions')
+        ]);
     }
 
 
@@ -108,7 +120,11 @@ class B2tTripClientController extends Controller
                     ->with('client', 'b2tTrip', 'payments', 'paymentTransactions')
                     ->get();
 
-        return response()->json($trashedClient);
+        return response()->json
+        ([
+            'message' => 'success',
+            'trashedClient' => $trashedClient
+        ]);
     }
 
 

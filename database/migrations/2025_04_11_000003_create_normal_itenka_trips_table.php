@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trips', function (Blueprint $table) {
+        Schema::create('normal_itenka_trips', function (Blueprint $table) {
             $table->id();
             $table->foreignId('driver_id')->nullable()->constrained('drivers')->onDelete('set null');
             $table->date('trip_date');
-            $table->enum('trip_type', ['normal', 'special'])->default('normal');
-            $table->unsignedBigInteger('parent_trip_id')->nullable();
-            $table->enum('direction', ['t2b', 'b2t'])->nullable();
-            $table->text('trip_details')->nullable();
+            $table->string('trip_details');
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->softDeletes();
             $table->timestamps();
 
-            $table->foreign('parent_trip_id')->references('id')->on('trips')->onDelete('cascade');
         });
     }
 
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('trips');
+        Schema::dropIfExists('normal_itenka_trips');
     }
 };

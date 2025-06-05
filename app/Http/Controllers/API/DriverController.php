@@ -15,7 +15,11 @@ class DriverController extends Controller
                 ->latest()
                 ->paginate($perPage);
 
-        return response()->json($driver);
+        return response()->json
+        ([
+            'message' => 'success',
+            'driver' => $driver
+        ]);
     }
 
 
@@ -46,7 +50,11 @@ class DriverController extends Controller
         $validated['created_by'] = auth()->id();
         $driver = Driver::create($validated);
 
-        return response()->json($driver->load('trips', 't2bTrips', 'b2tTrips', 'specialTrips'), 201);
+        return response()->json
+        ([
+            'message' => 'Driver created successfully',
+            'driver' => $driver->load('trips', 't2bTrips', 'b2tTrips', 'specialTrips')
+        ], 201);
     }
 
 
@@ -102,7 +110,11 @@ class DriverController extends Controller
     
     public function show(Driver $driver)
     {
-        return response()->json($driver->load('trips', 't2bTrips', 'b2tTrips', 'specialTrips'));
+        return response()->json
+        ([
+            'message' => 'success',
+            'driver' => $driver->load('trips', 't2bTrips', 'b2tTrips', 'specialTrips')
+        ]);
     }
 
 
@@ -131,7 +143,11 @@ class DriverController extends Controller
                     ->with('trips', 't2bTrips', 'b2tTrips', 'specialTrips')
                     ->get();
 
-        return response()->json($trashedDriver);
+        return response()->json
+        ([
+            'message' => 'success',
+            'driver' => $trashedDriver
+        ]);
     }
 
 
@@ -144,6 +160,6 @@ class DriverController extends Controller
         ([
             'message' => 'Driver restored successfully',
             'trashedDriver' => $trashedDriver->load('trips', 't2bTrips', 'b2tTrips', 'specialTrips')
-        ]);
+        ], 200);
     }
 }

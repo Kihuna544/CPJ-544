@@ -10,8 +10,7 @@ return new class extends Migration
     {
         Schema::create('b2t_trips_table', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('driver_id')->nullable()->constrained('drivers')->onDelete('set null');
-            $table->date('trip_date');
+            $table->foreignId('normal_trip_id')->nullable()->constrained('normal_itenka_trips')->onDelete('set null');
             $table->unsignedBigInteger('total_number_of_sacks')->default(0);
             $table->unsignedBigInteger('total_number_of_packages')->default(0);
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');

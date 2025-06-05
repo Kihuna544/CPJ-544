@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\PaymentTransaction;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 
 class PaymentTransactionController extends Controller
@@ -31,12 +32,34 @@ class PaymentTransactionController extends Controller
             'special_trip_client_payment_id' => 'nullable|exists:special_trip_clients,id',
             'amount_paid' => 'required|numeric|min:0',
             'payment_date' => 'required|date',
-            'method' => '', // should be validated
-            'notes' => ''   // should be validated
+            'notes' => 'nullable|string|max:10000'
         ]);
 
         $validated['created_by'] = auth()->id();
+
         $paymentTransaction = PaymentTransaction::create($validated);
+
+        // computing the amount unpaid after getting the amount paid and saving it to the payment table
+        $payment = Payment::find($validated['payment_id']);
+        $totalPaid = PaymentTransaction::where('payment_id', $payment->$id)->sum('amount_paid');
+        $totalDue = ($payment->amount_to_pay_for_the_special_trip ?? 0) +
+                    ($payment->amount_to_pay_for_b2t ?? 0) +
+                    ($payment->amout_to_pay_for_t2b ?? 0);
+
+        $amountUnpaid = max($totalDue - $totalPaid, 0);
+        $payment->amount_unpaid = $amountUnpaid;
+
+        if($amountUnpaid == 0)
+        {
+            $payment->status = 'paid';
+        }
+        elseif($amountUnpaid== $totalDue) 
+        {
+            $payment->status = 'un_paid';
+        }
+        else{
+            $payment->status = 'partially_paid';
+        }
 
         return response()->json($paymentTransaction->load('payment', 't2bClient', 'b2tClient', 'specialTripClient'), 201);
     }
@@ -52,14 +75,43 @@ class PaymentTransactionController extends Controller
             'special_trip_client_payment_id' => 'nullable|exists:special_trip_clients,id',
             'amount_paid' => 'required|numeric|min:0',
             'payment_date' => 'required|date',
-            'method' => '', // should be validated
-            'notes' => ''   // should be validated
+            'notes' => 'requuired|string|max:10000'  
         ]);
 
+        
         $validated['updated_by'] = auth()->id();
         $paymentTransaction->update($validated);
 
-        return response()->json($paymentTransaction->load('payment', 't2bClient', 'b2tClient', 'specialTripClient'), 200);
+        // computing the amount unpaid after getting the amount paid and saving it to the payment table
+        $payment = Payment::find($validated['payment_id']);
+        $totalPaid = PaymentTransaction::where('payment_id', $payment->$id)->sum('amount_paid');
+        $totalDue = ($payment->amount_to_pay_for_the_special_trip ?? 0) +
+                    ($payment->amount_to_pay_for_b2t ?? 0) +
+                    ($payment->amout_to_pay_for_t2b ?? 0);
+
+        $amountUnpaid = max($totalDue - $totalPaid, 0);
+        $payment->amount_unpaid = $amountUnpaid;
+
+        if($amountUnpaid == 0)
+        {
+            $payment->status = 'paid';
+        }
+        elseif($amountUnpaid == $totalDue)
+        {
+            $payment->status = 'un_paid';
+        }
+        else{
+            $payment->status = 'partially_paid';
+        }
+
+        $payment->save();
+
+        return response()->json(
+        [
+                'message' => 'Transaction updated successfully',
+                'paymentTransaction' => $paymentTransaction->load('payment', 't2bClient', 'b2tClient', 'specialTripClient'),
+                'amount_paid' => $totalPaid
+        ], 200);
     }
 
 
@@ -71,12 +123,42 @@ class PaymentTransactionController extends Controller
 
     public function destroy(PaymentTransaction $paymentTransaction)
     {
-        $paymentTransaction->delete;
+        $paymentTransaction->load('payment', 't2bClient', 'b2tClient', 'specialTripClient');
+
+        $payment->deleted_by = auth()->id();
+        $payment->save();
+
+        $trashedPayment = $payment;
+
+        $payment->delete();
 
         return response()->json
         ([
             'message' => 'Transaction deleted',
-            'paymentTransaction' => $paymentTransaction->load('payment', 't2bClient', 'b2tClient', 'specialTripClient')
+            'paymentTransaction' => $trashedPayment
         ]);
+    }
+
+
+    public function trashed()
+    {
+        $trashedTransactions = Payment::onlyTrashed()
+                        ->with('payment', 't2bClient', 'b2tClient', 'specialTripClient')
+                        ->get();
+
+        return response()->json($trashedTransactions);
+    }
+
+
+    public function restore($id)
+    {
+        $trashedTransaction = Payment::onlyTrashed()->findOrFail($id);
+        $trashedTransaction->restore();
+
+        return response()->json(
+         [
+            'message' => 'Transaction restored successfully',
+            'trashedPayment' => $trashedTransaction->load('payment', 't2bClient', 'b2tClient', 'specialTripClient'
+        )], 200);
     }
 }

@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PaymentTransaction extends Model
 {
     //
+    use SoftDeletes;
+    
     protected $table = 'payment_transactions';
 
     protected $fillable = [
@@ -16,7 +19,6 @@ class PaymentTransaction extends Model
         'special_trip_client_payment_id',
         'amount_paid',
         'payment_date',
-        'method',
         'notes',
         'created_by',
         'updated_by',

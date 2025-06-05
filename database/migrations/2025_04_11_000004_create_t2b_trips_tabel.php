@@ -10,10 +10,11 @@ return new class extends Migration
     {
         Schema::create('t2b_trips_table', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('driver_id')->nullable()->constrained('drivers')->onDelete('set null');
-            $table->date('trip_date');
+            $table->foreignId('normal_trip_id')->nullable()->constrained('normal_itenka_trips')->onDelete('set null');
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->softDeletes();
             $table->timestamps();
         });
 
@@ -24,7 +25,9 @@ return new class extends Migration
             $table->string('client_name');// filled in here directly from the client table.
             $table->decimal('amount_to_pay_for_t2b', 8, 2)->default(0);
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->softDeletes();
             $table->timestamps(); 
         });
 
@@ -34,8 +37,10 @@ return new class extends Migration
             $table->foreignId('t2b_trip_id')->constrained('t2b_trips_table')->onDelete('cascade');
             $table->string('item_name');
             $table->unsignedInteger('quantity');
-            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');         
+            $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -22,7 +22,6 @@ class Payment extends Model
         'amount_to_pay_for_the_special_trip',
         'amount_to_pay_for_b2t',
         'amount_to_pay_for_t2b',
-        'amount_paid',
         'amount_unpaid',
         'status',
         'notes',

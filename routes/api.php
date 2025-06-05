@@ -19,7 +19,7 @@ use App\Http\Controllers\API\T2bClientItemController;
 use App\Http\Controllers\API\T2bTripClientController;
 use App\Http\Controllers\API\T2bTripController;
 use App\Http\Controllers\API\TemporaryClientController;
-use App\Http\Controllers\API\TripController;
+use App\Http\Controllers\API\NormalItenkaTripController;
 
 
 
@@ -39,6 +39,6 @@ Route::apiResource('/t2bTripClientItems', T2bClientItemController::class);
 Route::apiResource('/t2bTripClients', T2bTripClientController::class);
 Route::apiResource('/t2bTrips', T2bTripController::class);
 Route::apiResource('/temporaryClients', TemporaryClientController::class);
-Route::apiResource('/trips', TripController::class);
+Route::apiResource('/normalItenkaTrips', NormalItenkaTripController::class);
 
 Route::post('/b2t-trips/{b2tTrip}/refresh-totals', [B2tTripController::class, 'refreshTotals']);

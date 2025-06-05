@@ -13,8 +13,7 @@ class B2tTrip extends Model
     protected $table = 'b2t_trips_table';
     
     protected $fillable = [
-        'driver_id',
-        'trip_date',
+        'normal_trip_id',
         'total_number_of_sacks',
         'total_number_of_packages',
         'created_by',
@@ -22,16 +21,15 @@ class B2tTrip extends Model
         'updated_by',
     ];
 
+    public function trip()
+    {
+        return $this->belongsTO(NormalItenkaTrip::class, 'normal_trip_id');
+    }
+
     public function b2tTripClients()
     {
         return $this->hasMany(B2tTripClient::class, 'b2t_trip_id');
     }
-
-    public function driver()
-    {
-        return $this->belongsTo(Driver::class);
-    }
-
     
     public function refreshTotals()
     {

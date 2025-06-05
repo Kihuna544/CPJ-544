@@ -21,8 +21,7 @@ class PaymentController extends Controller
 
         return response()->json
             ([
-                'payment' =>$payment,
-                'total_paid' => $payment->sum('amount_paid')
+                'payments' =>$payment,
             ]);
     }
 
@@ -37,44 +36,20 @@ class PaymentController extends Controller
             'amount_to_pay_for_the_special_trip' => 'nullable|numeric|min:0',
             'amount_to_pay_for_b2t' => 'nullable|numeric|min:0',
             'amount_to_pay_for_t2b' => 'nullable|numeric|min:0',
-            'amount_paid' => 'required|numeric|min:0',
-            'status' => 'required|in:un_paid,partially_paid,paid',
             'notes' => 'nullable|string|max:10000'   
         ]);
 
-        $amountUnpaid = null;
-        $specialTripClient = null;
-        $b2tTripClient = null;
-        $t2bTripClient = null;  
+        $totalDue = ($validated['amount_to_pay_for_the_special_trip'] ?? 0) +
+                    ($validated['amount_to_pay_for_b2t'] ?? 0) +
+                    ($validated['amount_to_pay_for_t2b'] ?? 0);
 
-        if(isset($validated['special_trip_client_id'])){
 
-            $specialTripClient = SpecialTripClient::find($validated['special_trip_client_id']);
+        $validated['amount_unpaid'] = $totalDue; // upon creating a new payment, i expect that no transaction is made
 
-            $validated['client_name'] = $specialTripClient->client_name ?? 'Unknown Client';
-
-            $validated['amount_unpaid'] = $validated['amount_to_pay_for_the_special_trip'] - $validated['amount_paid'];
-        }
-
-        elseif(isset($validated['t2b_trip_client_id']))
-        {
-            $t2bTripClient = T2bTripClient::find($validated['t2b_trip_client_id']);
-
-            $validated['client_name'] = $t2bTripClient->client_name ?? 'Unknown Client';
-
-            $validated['amount_unpaid'] = $validated['amount_to_pay_for_t2b'] - $validated['amount_paid'];
-        }
-
-        elseif(isset($validated['b2t_trip_client_id']))
-        {
-            $b2tTripClient = B2tTripClient::find($validated['b2t_trip_client_id']);
-
-            $validated['client_name'] = $b2tTripClient->client_name ?? 'Unknown Client';
-
-            $validated['amount_unpaid'] = $validated['amount_to_pay_for_b2t'] - $validated['amount_paid'];
-        }
+        $validated['status'] = 'un_paid';
 
         $validated['created_by'] = auth()->id();
+
         $payment = Payment::create($validated);
 
         return response()->json($payment->load('t2bClient', 'b2tClient', 'specialTripClient', 'paymentTransactions'), 201);
@@ -91,45 +66,31 @@ class PaymentController extends Controller
             'amount_to_pay_for_the_special_trip' => 'nullable|numeric|min:0',
             'amount_to_pay_for_b2t' => 'nullable|numeric|min:0',
             'amount_to_pay_for_t2b' => 'nullable|numeric|min:0',
-            'amount_unpaid' => 'required|numeric|min:0',
-            'status' => 'required|in:un_paid,partially_paid,paid',
-            'notes' => 'required|string|max:10000'
+            'notes' => 'nullable|string|max:10000'
         ]);
 
-        $validated['amount_paid'] = $payment->total_paid; //  amount paid from the getTotalPaidAttribute created in the Payment Model
-        $amountUnpaid = null;
-        $specialTripClient = null;
-        $t2bTripClient = null;
-        $b2tTripClient = null;
+        $totalDue = ($validated['amount_to_pay_for_the_special_trip'] ?? $payment->amount_to_pay_for_the_special_trip ?? 0) +
+                    ($validated['amount_to_pay_for_b2t'] ?? $payment->amount_to_pay_for_b2t ?? 0) +
+                    ($validated['amount_to_pay_for_t2b'] ?? $payment->amount_to_pay_for_t2b ?? 0);
 
-        if(isset($validated['special_trip_client_id']))
+        $totalPaid = $payment->paymentTransactions()->sum('amount_paid');
+        $amountUnpaid = max($totalDue - $totalPaid, 0);
+        $payment->amount_unpaid = $amountUnpaid;
+
+        if($amountUnpaid == 0)
         {
-            $specialTripClient = SpecialTripClient::find($validated['special_trip_client_id']);
-
-            $validated['client_name'] = $specialTripClient->client_name ?? 'Unknown Client';
-
-            $validated['amount_unpaid'] = $validated['amount_to_pay_for_the_special_trip'] - $validated['amount_paid'];
+            $payment->status = 'paid';
         }
-
-        elseif(isset($validated['t2b_trip_client_id']))
+        elseif($amountUnpaid == $totalDue)
         {
-            $t2bTripClient = T2bTripClient::find($validated['t2b_trip_client_id']);
-
-            $validated['client_name'] = $t2bTripClient->client_name ?? 'Unknown Client';
-
-            $validated['amount_unpaid'] = $validated['amount_to_pay_for_t2b'] - $validated['amount_paid'];
+            $payment->status = 'un_paid';
         }
-
-        elseif(isset($validated['b2t_trip_client_id']))
-        {
-            $b2tTripClient = B2tTripClient::find($validated['b2t_trip_client_id']);
-
-            $validated['client_name'] = $b2tTripClient->client_name ?? 'Unknown Client';
-
-            $validated['amount_unpaid'] = $validated['amount_to_pay_for_b2t'] - $validated['amount_paid'];
+        else{
+            $payment->status = 'partially_paid';
         }
+        $payment->save();
 
-        $validated['created_by'] = auth()->id();
+        $validated['updated_by'] = auth()->id();
         $payment->update($validated);
 
 
@@ -146,7 +107,6 @@ class PaymentController extends Controller
         return response()->json
         ([
             'payment' => $payment->load('t2bClient', 'b2tClient', 'specialTripClient', 'paymentTransactions'),
-            'total_paid' => $payment->total_paid
         ]);
     }
 
@@ -164,9 +124,8 @@ class PaymentController extends Controller
 
         return response()->json
         ([
-            'message' => 'Payment deleted succesfully',
+            'message' => 'Payment deleted successfully',
             'deletedPayment' => $deletedPayment,
-            'total_paid' => $payment->total_paid
         ]);
     }
 
