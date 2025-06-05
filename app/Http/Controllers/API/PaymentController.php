@@ -21,6 +21,7 @@ class PaymentController extends Controller
 
         return response()->json
             ([
+                'message' => 'success',
                 'payments' =>$payment,
             ]);
     }
@@ -52,7 +53,11 @@ class PaymentController extends Controller
 
         $payment = Payment::create($validated);
 
-        return response()->json($payment->load('t2bClient', 'b2tClient', 'specialTripClient', 'paymentTransactions'), 201);
+        return response()->json($payment->load
+        ([
+            'message' => 'Payment created successfully',
+            'payment' => $payment->load('t2bClient', 'b2tClient', 'specialTripClient', 'paymentTransactions')
+        ]), 201);
     }
 
 
@@ -106,6 +111,7 @@ class PaymentController extends Controller
     {
         return response()->json
         ([
+            'message' => 'success',
             'payment' => $payment->load('t2bClient', 'b2tClient', 'specialTripClient', 'paymentTransactions'),
         ]);
     }
@@ -136,7 +142,11 @@ class PaymentController extends Controller
                         ->with('t2bClient', 'b2tClient', 'specialTripClient', 'paymentTransactions')
                         ->get();
 
-        return response()->json($trashedPayment);
+        return response()->json
+        ([
+            'message' => 'success',
+            'payment' => $payment->load('t2bClient', 'b2tClient', 'specialTripClient', 'paymentTransactions')
+        ]);
     }
 
 

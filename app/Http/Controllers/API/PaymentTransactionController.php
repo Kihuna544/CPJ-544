@@ -18,7 +18,11 @@ class PaymentTransactionController extends Controller
                             ->OrderByDesc('payment_date')
                             ->paginate($perPage);
 
-        return response()->json($paymentTransaction);
+        return response()->json
+        ([
+            'message' => 'success',
+            'paymentTransaction' => $paymentTransaction
+        ]);
     }
 
 
@@ -41,10 +45,10 @@ class PaymentTransactionController extends Controller
 
         // computing the amount unpaid after getting the amount paid and saving it to the payment table
         $payment = Payment::find($validated['payment_id']);
-        $totalPaid = PaymentTransaction::where('payment_id', $payment->$id)->sum('amount_paid');
+        $totalPaid = PaymentTransaction::where('payment_id', $validated['payment_id'])->sum('amount_paid');
         $totalDue = ($payment->amount_to_pay_for_the_special_trip ?? 0) +
                     ($payment->amount_to_pay_for_b2t ?? 0) +
-                    ($payment->amout_to_pay_for_t2b ?? 0);
+                    ($payment->amount_to_pay_for_t2b ?? 0);
 
         $amountUnpaid = max($totalDue - $totalPaid, 0);
         $payment->amount_unpaid = $amountUnpaid;
@@ -61,7 +65,13 @@ class PaymentTransactionController extends Controller
             $payment->status = 'partially_paid';
         }
 
-        return response()->json($paymentTransaction->load('payment', 't2bClient', 'b2tClient', 'specialTripClient'), 201);
+        $payment->save();
+
+        return response()->json
+        ([
+            'message' => 'Transaction created successfully',
+            'paymentTransaction' => $paymentTransaction->load('payment', 't2bClient', 'b2tClient', 'specialTripClient')
+        ], 201);
     }
 
 
@@ -70,12 +80,12 @@ class PaymentTransactionController extends Controller
         $validated = $request->validate
         ([
             'payment_id' => 'required|exists:payments,id',
-            't2b_trip_client_payment_id' => 'nullable|exixst:t2b_trip_clients,id',
+            't2b_trip_client_payment_id' => 'nullable|exists:t2b_trip_clients,id',
             'b2t_trip_client_payment_id' => 'nullable|exists:b2t_trip_clients,id',
             'special_trip_client_payment_id' => 'nullable|exists:special_trip_clients,id',
             'amount_paid' => 'required|numeric|min:0',
             'payment_date' => 'required|date',
-            'notes' => 'requuired|string|max:10000'  
+            'notes' => 'required|string|max:10000'  
         ]);
 
         
@@ -84,10 +94,10 @@ class PaymentTransactionController extends Controller
 
         // computing the amount unpaid after getting the amount paid and saving it to the payment table
         $payment = Payment::find($validated['payment_id']);
-        $totalPaid = PaymentTransaction::where('payment_id', $payment->$id)->sum('amount_paid');
+        $totalPaid = PaymentTransaction::where('payment_id', $validated['payment_id'])->sum('amount_paid');
         $totalDue = ($payment->amount_to_pay_for_the_special_trip ?? 0) +
                     ($payment->amount_to_pay_for_b2t ?? 0) +
-                    ($payment->amout_to_pay_for_t2b ?? 0);
+                    ($payment->amount_to_pay_for_t2b ?? 0);
 
         $amountUnpaid = max($totalDue - $totalPaid, 0);
         $payment->amount_unpaid = $amountUnpaid;
@@ -117,7 +127,11 @@ class PaymentTransactionController extends Controller
 
     public function show(PaymentTransaction $paymentTransaction)
     {
-        return response()->json($paymentTransaction->load('payment', 't2bClient', 'b2tClient', 'specialTripClient'));
+        return response()->json
+        ([
+            'message' => 'success',
+            'paymentTransaction' => $paymentTransaction->load('payment', 't2bClient', 'b2tClient', 'specialTripClient')
+        ]);
     }
 
 
@@ -125,12 +139,12 @@ class PaymentTransactionController extends Controller
     {
         $paymentTransaction->load('payment', 't2bClient', 'b2tClient', 'specialTripClient');
 
-        $payment->deleted_by = auth()->id();
-        $payment->save();
+        $paymentTransaction->deleted_by = auth()->id();
+        $paymentTransaction->save();
 
-        $trashedPayment = $payment;
+        $trashedPayment = $paymentTransaction;
 
-        $payment->delete();
+        $paymentTransaction->delete();
 
         return response()->json
         ([
@@ -142,17 +156,21 @@ class PaymentTransactionController extends Controller
 
     public function trashed()
     {
-        $trashedTransactions = Payment::onlyTrashed()
+        $trashedTransactions = PaymentTransaction::onlyTrashed()
                         ->with('payment', 't2bClient', 'b2tClient', 'specialTripClient')
                         ->get();
 
-        return response()->json($trashedTransactions);
+        return response()->json
+        ([
+            'message' => 'success',
+            'trashedTransactions' => $trashedTransactions
+        ]);
     }
 
 
     public function restore($id)
     {
-        $trashedTransaction = Payment::onlyTrashed()->findOrFail($id);
+        $trashedTransaction = PaymentTransaction::onlyTrashed()->findOrFail($id);
         $trashedTransaction->restore();
 
         return response()->json(

@@ -14,7 +14,11 @@ class OffDutyExpenseController extends Controller
         $offDutyExpense = OffDutyExpense::orderByDesc('expense_date')
                         ->paginate(10);
                     
-        return response()->json($offDutyExpense);
+        return response()->json
+        ([
+            'message' => 'success',
+            'offDutyExpense' => $offDutyExpense
+        ]);
     }
 
 
@@ -31,7 +35,11 @@ class OffDutyExpenseController extends Controller
         $validated['created_by'] = auth()->id();
         $offDutyExpense = OffDutyExpense::create($validated);
 
-        return response()->json($offDutyExpense);
+        return response()->json
+        ([
+            'message' => 'Expense added successfully',
+            'offDutyExpense' => $offDutyExpense
+        ]);
     }
 
 
@@ -58,7 +66,11 @@ class OffDutyExpenseController extends Controller
 
     public function show(OffDutyExpense $offDutyExpense)
     {
-        return response()->json($offDutyExpense);
+        return response()->json
+        ([
+            'message' => 'success',
+            'offDutyExpense' => $offDutyExpense
+        ]);
     }
 
 
@@ -83,7 +95,11 @@ class OffDutyExpenseController extends Controller
     {
         $offDutyExpense = OffDutyExpense::onlyTrashed()->get();
 
-        return response()->json($offDutyExpense);
+        return response()->json
+        ([
+            'message' => 'success',
+            'offDutyExpense' => $offDutyExpense
+        ]);
     }
 
 

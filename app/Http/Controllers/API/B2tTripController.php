@@ -34,7 +34,8 @@ class B2tTripController extends Controller
 
         $validated['created_by'] = auth()->id();
         $b2tTrip = B2tTrip::create($validated);
-        // on creating the trip, i expect no number of sacks is recorded
+        $b2tTrip->refreshTotals();
+        
         return response()->json
         ([
             'message' => 'Trip created successfully',
