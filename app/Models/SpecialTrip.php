@@ -3,19 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SpecialTrip extends Model
 {
     //
+    use SoftDeletes;
+
     protected $table = 'special_trips';
 
     protected $fillable = [
         'driver_id',
-        'client_id',
         'trip_date',
         'trip_destination',
-        'trip_status',
         'created_by',
+        'deleted_by',
         'updated_by',
     ];
 

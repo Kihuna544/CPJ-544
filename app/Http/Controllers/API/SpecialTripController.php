@@ -12,11 +12,15 @@ class SpecialTripController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->query('per_page', 10);
-        $specialTrip = SpecialTrip::with('driver', 'specialTripItems, specialTripClients')
+        $specialTrips = SpecialTrip::with('driver', 'specialTripItems', 'specialTripClients')
                     ->latest()
                     ->paginate($perPage);
 
-        return response()->json($specialTrip);
+        return response()->json
+        ([
+            'message' => 'Success',
+            'specialTrips' => $specialTrips
+        ]);
     }
 
 
@@ -25,16 +29,18 @@ class SpecialTripController extends Controller
         $validated = $request->validate
         ([
             'driver_id' => 'required|exists:drivers,id',
-            'client_id' => 'required|exists:temporary_clients,id',
             'trip_date' => 'required|date',
             'trip_destination' => 'required|string|max:255',
-            'trip_status' => 'required|string',//NOTE
         ]);
 
         $validated['created_by'] = auth()->id();
         $specialTrip = SpecialTrip::create($validated);
 
-        return response()->json($specialTrip->load('driver', 'specialTripItems, specialTripClients'), 201);
+        return response()->json
+        ([
+            'message' => 'Trip initiated successfully',
+            'specialTrip' => $specialTrip->load('driver', 'specialTripItems', 'specialTripClients')
+        ], 201);
     }
 
 
@@ -43,33 +49,73 @@ class SpecialTripController extends Controller
         $validated = $request->validate
         ([
             'driver_id' => 'required|exists:drivers,id',
-            'client_id' => 'required|exists:temporary_clients,id',
             'trip_date' => 'required|date',
             'trip_destination' => 'required|string|max:255',
-            'trip_status' => 'required|string',//NOTE
         ]);
 
-        $validate['updated_by'] = auth()->id();
-        $specialTrip = SpecialTrip::update($validated);
+        $validated['updated_by'] = auth()->id();
+        $specialTrip->update($validated);
 
-        return response()->json($specialTrip->load('driver', 'specialTripItems, specialTripClients'), 200);
+        return response()->json
+        ([
+            'message' => 'Trip updated successfully',
+            'specialTrip' => $specialTrip->load('driver', 'specialTripItems', 'specialTripClients')
+        ], 200);
     }
 
 
     public function show(SpecialTrip $specialTrip)
     {
-        return response()->json($specialTrip->load('driver', 'specialTripItems, specialTripClients'));
+        return response()->json
+        ([
+            'message' => 'Success',
+            'specialTrip' => $specialTrip->load('driver', 'specialTripItems', 'specialTripClients')
+        ]);
     }
 
 
     public function destroy(SpecialTrip $specialTrip)
     {
+        $specialTrip->load('driver', 'specialTripItems', 'specialTripClients');
+
+        $specialTrip->deleted_by = auth()->id();
+        $specialTrip->save();
+
+        $trashedTrip = $specialTrip;
+
         $specialTrip->delete();
 
         return response()->json
         ([
             'message' => 'Trip deleted successfully',
-            'specialTrip' => $specialTrip->load('driver', 'specialTripItems, specialTripClients'),
+            'specialTrip' => $trashedTrip
          ]);
+    }
+
+
+    public function trashed()
+    {
+        $trashedTrips = SpecialTrip::onlyTrashed()
+                    ->with('driver', 'specialTripItems', 'specialTripClients')
+                    ->get();
+
+        return response()->json
+        ([
+            'message' => 'Success',
+            'trashedTrips' => $trashedTrips
+        ]);
+    }
+
+
+    public function restore($id)
+    {
+        $trashedTrip = SpecialTrip::onlyTrashed()->findOrFail($id);
+        $trashedTrip->restore();
+
+        return response()->json
+        ([
+            'message' => 'Trip restored successfully',
+            'trashedTrip' => $trashedTrip->load('driver', 'specialTripItems', 'specialTripClients')
+        ]);
     }
 }
