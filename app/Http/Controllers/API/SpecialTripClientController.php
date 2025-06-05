@@ -124,7 +124,7 @@ class SpecialTripClientController extends Controller
         ([
             'message' => 'Client restored successfully',
             'trashedClient' => $trashedClient->load('client', 'specialTrip', 'specialTripClientItems', 'payments', 'paymentTransactions')
-        ]);
+        ], 200);
     }
 
 }
