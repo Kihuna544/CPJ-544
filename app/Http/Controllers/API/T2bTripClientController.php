@@ -134,7 +134,7 @@ class T2bTripClientController extends Controller
         ([
             'message' => 'Client restored successfully',
             'trashedClient' => $trashedClient->load('temporaryClient', 't2bTrip', 'clientItems', 'paymentTransactions', 'payments')
-        ]);
+        ],200);
     }
 
 }

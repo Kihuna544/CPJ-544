@@ -114,7 +114,7 @@ class NormalItenkaTripController extends Controller
         return response()->json
         ([
             'message' => 'Trip restored successfully',
-            'trashedTrip' => $trashedTrip
+            'trashedTrip' => $trashedTrip->load('driver', 't2bTrips', 'b2tTrips', 'expenses')
         ]);
     }
 }
