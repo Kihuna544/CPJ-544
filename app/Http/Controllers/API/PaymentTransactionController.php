@@ -79,13 +79,13 @@ class PaymentTransactionController extends Controller
     {
         $validated = $request->validate
         ([
-            'payment_id' => 'required|exists:payments,id',
+            'payment_id' => 'sometimes|required|exists:payments,id',
             't2b_trip_client_payment_id' => 'nullable|exists:t2b_trip_clients,id',
             'b2t_trip_client_payment_id' => 'nullable|exists:b2t_trip_clients,id',
             'special_trip_client_payment_id' => 'nullable|exists:special_trip_clients,id',
-            'amount_paid' => 'required|numeric|min:0',
-            'payment_date' => 'required|date',
-            'notes' => 'required|string|max:10000'  
+            'amount_paid' => 'sometimes|required|numeric|min:0',
+            'payment_date' => 'sometimes|required|date',
+            'notes' => 'nullable|string|max:10000'  
         ]);
 
         

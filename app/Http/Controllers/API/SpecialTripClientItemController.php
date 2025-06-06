@@ -48,10 +48,10 @@ class SpecialTripClientItemController extends Controller
     {
         $validated = $request->validate
         ([
-           'special_trip_id' => 'required|exists:special_trips,id',
-           'special_trip_client_id' => 'required|exists:special_trip_clients,id',
-           'item_name' => 'required|string|max:255',
-           'quantity' => 'required|numeric|min:0' 
+           'special_trip_id' => 'sometimes|required|exists:special_trips,id',
+           'special_trip_client_id' => 'sometimes|required|exists:special_trip_clients,id',
+           'item_name' => 'sometimes|required|string|max:255',
+           'quantity' => 'sometimes|required|numeric|min:0' 
         ]);
 
         $validated['updated_by'] = auth()->id();
@@ -117,6 +117,6 @@ class SpecialTripClientItemController extends Controller
         ([
             'message' => 'Item restored successfully',
             'trashedItem' => $trashedItem->load('specialTripClient', 'specialTrip')
-        ]);
+        ],200);
     }
 }

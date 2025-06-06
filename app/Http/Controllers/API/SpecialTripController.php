@@ -48,9 +48,9 @@ class SpecialTripController extends Controller
     {
         $validated = $request->validate
         ([
-            'driver_id' => 'required|exists:drivers,id',
-            'trip_date' => 'required|date',
-            'trip_destination' => 'required|string|max:255',
+            'driver_id' => 'sometimes|required|exists:drivers,id',
+            'trip_date' => 'sometimes|required|date',
+            'trip_destination' => 'sometimes|required|string|max:255',
         ]);
 
         $validated['updated_by'] = auth()->id();
@@ -116,6 +116,6 @@ class SpecialTripController extends Controller
         ([
             'message' => 'Trip restored successfully',
             'trashedTrip' => $trashedTrip->load('driver', 'specialTripItems', 'specialTripClients')
-        ]);
+        ], 200);
     }
 }
