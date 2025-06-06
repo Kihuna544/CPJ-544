@@ -22,7 +22,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('t2b_trip_id')->constrained('t2b_trips_table')->onDelete('cascade');
             $table->foreignId('client_id')->constrained('temporary_clients')->onDelete('cascade');
-            $table->string('client_name');// filled in here directly from the client table.
+            $table->string('client_name');
             $table->decimal('amount_to_pay_for_t2b', 8, 2)->default(0);
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');

@@ -3,10 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
 class T2bClientItem extends Model
 {
+    //
+    use SoftDeletes; 
+
     protected $table = 't2b_trips_items';
     
     protected $fillable =
@@ -16,6 +20,7 @@ class T2bClientItem extends Model
         'item_name',
         'quantity',
         'created_by',
+        'deleted_by',
         'updated_by',
     ];
 
