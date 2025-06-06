@@ -37,7 +37,7 @@ class B2tTripClientController extends Controller
             'amount_to_pay_for_b2t' => 'required|numeric|min:0',
         ]);
 
-        if(isset($validated['client_name']))
+        if(isset($validated['client_id']))
         {
             $b2tClient = Client::find($validated ['client_id']);
             $validated['client_name'] = $b2tClient->client_name;
