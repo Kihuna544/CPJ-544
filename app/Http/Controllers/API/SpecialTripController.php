@@ -96,7 +96,8 @@ class SpecialTripController extends Controller
     public function trashed()
     {
         $trashedTrips = SpecialTrip::onlyTrashed()
-                    ->with('driver', 'specialTripItems', 'specialTripClients')
+                    ->with('driver', 'specialTripItems', 'specialTripClients')           
+                    ->paginate($request->query('per_page', 10))
                     ->get();
 
         return response()->json

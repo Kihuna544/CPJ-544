@@ -102,6 +102,7 @@ class ExpenseController extends Controller
     {
         $trashedExpense = Expense::onlyTrashed()
                         ->with('trip')
+                        ->paginate($request->query('per_page', 10))
                         ->get();
         
         return response()->json

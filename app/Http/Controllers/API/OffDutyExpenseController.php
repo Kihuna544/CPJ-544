@@ -93,7 +93,9 @@ class OffDutyExpenseController extends Controller
 
     public function trashed()
     {
-        $offDutyExpense = OffDutyExpense::onlyTrashed()->get();
+        $offDutyExpense = OffDutyExpense::onlyTrashed()
+                        ->paginate($request->query('per_page', 10))
+                        ->get();
 
         return response()->json
         ([

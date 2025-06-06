@@ -99,6 +99,7 @@ class T2bClientItemController extends Controller
     {
         $trashedItems = T2bClientItem::onlyTrashed()
                       ->with('t2bClient', 't2bTrip')
+                      ->paginate($request->query('per_page', 10))
                       ->get();
 
         return response()->json

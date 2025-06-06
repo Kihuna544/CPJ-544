@@ -105,6 +105,7 @@ class SpecialTripClientController extends Controller
     {
         $trashedClients = SpecialTripClient::onlyTrashed()
                         ->with('client', 'specialTrip', 'specialTripClientItems', 'payments', 'paymentTransactions')
+                        ->paginate($request->query('per_page', 10))
                         ->get();
 
         return response()->json

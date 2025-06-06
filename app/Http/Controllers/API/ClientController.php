@@ -145,6 +145,7 @@ class ClientController extends Controller{
     {
         $trashedClient = Client::onlyTrashed()
                         ->with('b2tClients')
+                        ->paginate($request->query('per_page', 10))
                         ->get();
         return response()->json
         ([

@@ -47,7 +47,7 @@ class T2bTripController extends Controller
     {
         $validated = $request->validate
         ([
-            'normal_trip_id' => 'required|exists:normal_itenka_trips,id',
+            'normal_trip_id' => 'sometimes|required|exists:normal_itenka_trips,id',
         ]);
 
         $validated['updated_by'] = auth()->id();
@@ -94,6 +94,7 @@ class T2bTripController extends Controller
     {
         $trashedTrip = T2bTrip::onlyTrashed()
                      ->with('trip', 't2bTripClients', 't2bClientItems')
+                     ->paginate($request->query('per_page', 10))
                      ->get();
         
         return response()->json($trashedTrip);

@@ -140,6 +140,7 @@ class PaymentController extends Controller
     {
         $trashedPayment = Payment::onlyTrashed()
                         ->with('t2bClient', 'b2tClient', 'specialTripClient', 'paymentTransactions')
+                        ->paginate($request->query('per_page', 10))
                         ->get();
 
         return response()->json

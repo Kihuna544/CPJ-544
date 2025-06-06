@@ -97,6 +97,7 @@ class B2tTripController extends Controller
     {
         $trashedTrip = B2tTrip::onlyTrashed()
                     ->with('trip', 'b2tTripClients')
+                    ->paginate($request->query('per_page', 10))
                     ->get();
 
         return response()->json

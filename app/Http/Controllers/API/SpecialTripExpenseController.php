@@ -103,7 +103,8 @@ class SpecialTripExpenseController extends Controller
     public function trashed()
     {
         $trashedExpenses = SpecialTripExpense::onlyTrashed()
-                        ->with('specialTrip')
+                        ->with('specialTrip')                  
+                        ->paginate($request->query('per_page', 10))
                         ->get();
 
         return response()->json

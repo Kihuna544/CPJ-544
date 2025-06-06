@@ -3,17 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
 class TemporaryClient extends Model
 {
     //
+    use SoftDeletes;
+    
     protected $table = 'temporary_clients';
 
     protected $fillable = [
         'client_name',
         'phone',
         'created_by',
+        'deleted_by',
         'updated_by'
     ];
 

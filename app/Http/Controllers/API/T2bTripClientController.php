@@ -115,6 +115,7 @@ class T2bTripClientController extends Controller
     {
         $trashedClients = T2bTripClient::onlyTrashed()  
                        ->with('temporaryClient', 't2bTrip', 'clientItems', 'paymentTransactions', 'payments')
+                       ->paginate($request->query('per_page', 10))
                        ->get();
         
         return response()->json

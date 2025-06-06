@@ -97,7 +97,8 @@ class SpecialTripClientItemController extends Controller
     public function trashed()
     {
         $trashedItems = SpecialTripClientItem::onlyTrashed()
-                    ->with('specialTripClient', 'specialTrip')
+                    ->with('specialTripClient', 'specialTrip')      
+                    ->paginate($request->query('per_page', 10))
                     ->get();
 
         return response()->json

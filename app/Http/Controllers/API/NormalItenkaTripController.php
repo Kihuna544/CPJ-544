@@ -96,6 +96,7 @@ class NormalItenkaTripController extends Controller
     {
         $trashedTrip = NormalItenkaTrip::onlyTrashed()
                     ->with('driver', 't2bTrips', 'b2tTrips', 'expenses')
+                    ->paginate($request->query('per_page', 10))
                     ->get();
 
         return response()->json

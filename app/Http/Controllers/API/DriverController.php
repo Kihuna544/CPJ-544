@@ -141,6 +141,7 @@ class DriverController extends Controller
     {
         $trashedDriver = Driver::onlyTrashed()
                     ->with('trips', 't2bTrips', 'b2tTrips', 'specialTrips')
+                    ->paginate($request->query('per_page', 10))
                     ->get();
 
         return response()->json

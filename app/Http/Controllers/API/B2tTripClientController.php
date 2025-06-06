@@ -118,6 +118,7 @@ class B2tTripClientController extends Controller
     {
         $trashedClient = B2tTripClient::onlyTrashed()
                     ->with('client', 'b2tTrip', 'payments', 'paymentTransactions')
+                    ->paginate($request->query('per_page', 10))
                     ->get();
 
         return response()->json
